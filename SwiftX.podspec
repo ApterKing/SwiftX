@@ -25,7 +25,7 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = '8.0'
 
-  s.default_subspecs = 'Globals', 'Extensions', 'UIKit', 'Realm', 'Network', 'Cache'
+  s.default_subspecs = 'Base'
 
   # ---------------  Globals  -----------
   s.subspec 'Globals' do |ss|
@@ -122,7 +122,6 @@ Pod::Spec.new do |s|
     ss.source_files = 'SwiftX/Classes/Cache/*.swift'
 
     ss.frameworks = 'Foundation'
-    ss.dependency 'Cache'
   end
 
   # -------------- RN HotUpdate ---------------
@@ -131,6 +130,55 @@ Pod::Spec.new do |s|
     
     ss.dependency 'SSZipArchive', '~> 2.1.4'
     ss.dependency 'SwiftX/Extensions'
+  end
+
+  # --------------  OpenSDK 三方登录、支付工具  ----------------
+  s.subspec 'OpenSDK' do |ss|
+    # Alipay: 2.0; WeChat: 1.8.4; QQ: 3.3.3.0; Weibo: 3.2.3
+
+    ss.source_files = 'SwiftX/Classes/OpenSDK/*.{swift,h,m}'
+
+#ss.default_subspecs = 'Alipay', 'WeChat', 'QQ', 'Weibo' 
+
+    # Alipay: 2.0
+    ss.subspec 'Alipay' do |sss|
+
+      sss.resources = 'SwiftX/Classes/OpenSDK/Vendors/Alipay/*.bundle'
+
+      sss.vendored_frameworks = 'SwiftX/Classes/OpenSDK/Vendors/Alipay/*.framework'
+      sss.vendored_libraries = 'SwiftX/Classes/OpenSDK/Vendors/Alipay/*.a'
+      
+    end
+
+    # WeChat: 1.8.4
+    ss.subspec 'WeChat' do |sss|
+
+      sss.source_files = 'SwiftX/Classes/OpenSDK/Vendors/WeChat/*.{h,m}'
+
+      sss.vendored_libraries = 'SwiftX/Classes/OpenSDK/Vendors/WeChat/*.a'
+      
+    end
+
+    # QQ: 3.3.3.0
+    ss.subspec 'QQ' do |sss|
+
+      sss.vendored_frameworks = 'SwiftX/Classes/OpenSDK/Vendors/QQ/*.framework'
+
+    end
+
+    # Weibo: 3.2.3
+    ss.subspec 'Weibo' do |sss|
+
+      sss.source_files = 'SwiftX/Classes/OpenSDK/Vendors/Weibo/*.{h,m}'
+
+      sss.resources = 'SwiftX/Classes/OpenSDK/Vendors/Weibo/*.bundle'
+      sss.vendored_libraries = 'SwiftX/Classes/OpenSDK/Vendors/Weibo/*.a'
+      
+    end
+
+    s.frameworks = 'Photos', 'ImageIO', 'SystemConfiguration', 'CoreText', 'QuartzCore', 'Security', 'UIKit', 'Foundation', 'CoreGraphics','CoreTelephony'
+    s.libraries = 'sqlite3', 'z', 'stdc'
+    
   end
 
 end
