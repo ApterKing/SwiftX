@@ -24,31 +24,31 @@ public extension UIScreen {
     
     public class var statusBarHeight: CGFloat {
         get {
-            return UIDevice.isIphoneX() ? 44 : 20
+            return UIDevice.isIphoneX_xx() ? 44 : 20
         }
     }
     
     public class var navigationBarHeight:CGFloat {
         get {
-            return UIDevice.isIphoneX() ? 88 : 64
+            return UIDevice.isIphoneX_xx() ? 88 : 64
         }
     }
     
     public class var tabBarHeight:CGFloat {
         get {
-            return UIDevice.isIphoneX() ? 83 : 49
+            return UIDevice.isIphoneX_xx() ? 83 : 49
         }
     }
     
     public class var homeIndicatorMoreHeight:CGFloat {
         get {
-            return UIDevice.isIphoneX() ? 34 : 0
+            return UIDevice.isIphoneX_xx() ? 34 : 0
         }
     }
     
     public class var statusBarMoreHeight:CGFloat {
         get {
-            return UIDevice.isIphoneX() ? 24 : 0
+            return UIDevice.isIphoneX_xx() ? 24 : 0
         }
     }
 }

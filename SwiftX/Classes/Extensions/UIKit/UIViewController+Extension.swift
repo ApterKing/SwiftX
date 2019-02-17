@@ -113,9 +113,9 @@ public extension UIViewController {
             button.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: 80, height: 44))
             button.contentEdgeInsets = UIEdgeInsets(top: 0, left: left ? 0 : -4, bottom: 0, right: left ? 0 : -4)
         } else {
-            button.frame = CGRect(x: 0, y: 0, width: 35, height: 44)
+            button.frame = CGRect(x: 0, y: 0, width: 44, height: 44)
             button.contentEdgeInsets = UIEdgeInsets(top: 0, left: left ? -1 : 0, bottom: 0, right: left ? 0 : -1)
-            button.imageEdgeInsets = UIEdgeInsets(top: 3, left: 3, bottom: 3, right: 3)
+            button.imageEdgeInsets = UIEdgeInsets(top: 6, left: 6, bottom: 6, right: 6)
         }
         
         for option in options {

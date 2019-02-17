@@ -50,9 +50,9 @@ public extension UIDevice {
         return UIScreen.width == 414 ? true : false
     }
     
-    public class func isIphoneX() -> Bool {
+    public class func isIphoneX_xx() -> Bool {
         let height = UIScreen.main.bounds.size.height
-        return height >= 737 && height <= 812
+        return height == 812 || height <= 896 && UIScreen.main.scale == 2.0 || height <= 896 && UIScreen.main.scale == 3.0
     }
     
     public class var orientation: UIInterfaceOrientation {
