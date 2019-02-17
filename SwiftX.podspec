@@ -23,7 +23,7 @@ Pod::Spec.new do |s|
   s.source           = { :git => 'https://github.com/wangcong/Swift-X.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
-  s.ios.deployment_target = '8.0'
+  s.ios.deployment_target = '10.0'
 
   s.default_subspecs = 'Base'
 
@@ -76,7 +76,7 @@ Pod::Spec.new do |s|
 
     ss.subspec 'Base' do |sss|
     	sss.source_files = 'SwiftX/Classes/View/Base/*.swift'
-	sss.resources = ['SwiftX/Assets/Base/*.png']
+		sss.resources = ['SwiftX/Assets/Base/*.png']
 
         sss.frameworks = 'UIKit', 'Foundation'
     end
@@ -134,11 +134,7 @@ Pod::Spec.new do |s|
 
   # --------------  OpenSDK 三方登录、支付工具  ----------------
   s.subspec 'OpenSDK' do |ss|
-    # Alipay: 2.0; WeChat: 1.8.4; QQ: 3.3.3.0; Weibo: 3.2.3
-
     ss.source_files = 'SwiftX/Classes/OpenSDK/*.{swift,h,m}'
-
-#ss.default_subspecs = 'Alipay', 'WeChat', 'QQ', 'Weibo' 
 
     # Alipay: 2.0
     ss.subspec 'Alipay' do |sss|
@@ -177,7 +173,7 @@ Pod::Spec.new do |s|
     end
 
     s.frameworks = 'Photos', 'ImageIO', 'SystemConfiguration', 'CoreText', 'QuartzCore', 'Security', 'UIKit', 'Foundation', 'CoreGraphics','CoreTelephony'
-    s.libraries = 'sqlite3', 'z', 'stdc'
+    s.libraries = 'sqlite3', 'z'
     
   end
 

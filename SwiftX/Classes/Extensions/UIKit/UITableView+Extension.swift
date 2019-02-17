@@ -14,6 +14,7 @@ public extension UITableView {
         let tableView = UITableView(frame: CGRect.zero, style: .plain)
         tableView.backgroundColor = UIColor.clear
         tableView.separatorStyle = .none
+        tableView.separatorInset = UIEdgeInsets(top: 0, left: UIScreen.width, bottom: 0, right: 0)
         return tableView
     }
     
