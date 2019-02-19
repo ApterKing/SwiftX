@@ -94,7 +94,7 @@ public class XHttp {
         guard let url = URL(string: newPath) else { return nil }
         
         #if DEBUG
-        NSLog("XHttp  request before path: \(url.absoluteString) \n  body: \(String(describing: params))")
+        NSLog("XHttp  request before path: \(url.absoluteString)     body: \(String(describing: params))")
         #endif
         
         /* -------------------  请求前配置 ---------------- */
@@ -148,12 +148,12 @@ public class XHttp {
         }
         
         #if DEBUG
-        NSLog("XHttp  request after path: \(url.absoluteString) \n  body: \(request.httpBody != nil ? String(data: request.httpBody!, encoding: .utf8) ?? "nil" : "nil")")
+        NSLog("XHttp  request after path: \(url.absoluteString)    body: \(request.httpBody != nil ? String(data: request.httpBody!, encoding: .utf8) ?? "nil" : "nil")")
         #endif
         
         let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
             #if DEBUG
-            NSLog("XHttp  response:  \(String(describing: response?.url?.absoluteString))  \n success: \(String(describing: String(data: data ?? Data(), encoding: .utf8)))")
+            NSLog("XHttp  response:  \(String(describing: response?.url?.absoluteString))     success: \(String(describing: String(data: data ?? Data(), encoding: .utf8)))")
             #endif
             
             if error != nil {

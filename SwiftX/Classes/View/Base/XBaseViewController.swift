@@ -50,7 +50,7 @@ open class XBaseViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     // loading
-    private lazy var loadingView: XLoadingView = {
+    internal lazy var loadingView: XLoadingView = {
         let loadingView = XLoadingView(frame: CGRect.zero)
         loadingView.state = .loading
         loadingView.delegate = self
