@@ -35,7 +35,7 @@ public class XSearchBar: UISearchBar {
         clipsToBounds = true
         backgroundColor = UIColor.clear
         
-        tintColor = UIColor(hexColor: "#f6f6f6")
+        tintColor = UIColor(hexColor: "#999999")
         
         _initSearchFeildIfNeeded()
     }

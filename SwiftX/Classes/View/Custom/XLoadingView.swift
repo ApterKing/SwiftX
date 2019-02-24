@@ -118,8 +118,8 @@ open class XLoadingView: UIView {
     override open func layoutSubviews() {
         super.layoutSubviews()
         contentView.frame = bounds
-        promptImageView.frame = CGRect(origin: CGPoint(x: (contentView.width - promptImageView.width) / 2.0, y: (contentView.height - promptImageView.height) / 2.0 - 10), size: promptImageView.frame.size)
-        promptLabel.frame = CGRect(x: 0, y: promptImageView.top + promptImageView.height, width: contentView.width, height: 20)
+        promptImageView.frame = CGRect(origin: CGPoint(x: (contentView.width - promptImageView.width) / 2.0, y: (contentView.height - promptImageView.height) / 2.0 - 80), size: promptImageView.frame.size)
+        promptLabel.frame = CGRect(x: 0, y: promptImageView.top + promptImageView.height + 20, width: contentView.width, height: 20)
         
         loadingView.frame = CGRect(x: (width - 40) / 2.0, y: (height - 80) / 2.0, width: 40, height: 80)
         loadingShadowImageView.frame = CGRect(origin: CGPoint(x: (loadingView.width - loadingShadowImageView.width) / 2.0, y: loadingView.height - loadingShadowImageView.height), size: loadingShadowImageView.frame.size)

@@ -55,12 +55,14 @@ open class XBaseViewController: UIViewController, UIGestureRecognizerDelegate {
         let loadingView = XLoadingView(frame: CGRect.zero)
         loadingView.state = .loading
         loadingView.delegate = self
+        loadingView.isHidden = true
+        view.addSubview(loadingView)
         return loadingView
     }()
 
     override open func viewDidLoad() {
         super.viewDidLoad()
-        registerKeyboardObserver()
+//        registerKeyboardObserver()
         view.backgroundColor = UIColor.white
         navigationController?.navigationBar.isTranslucent = false
         tabBarController?.tabBar.isTranslucent = false
@@ -80,6 +82,7 @@ open class XBaseViewController: UIViewController, UIGestureRecognizerDelegate {
 
     override open func viewDidLayoutSubviews() {
         super.viewWillLayoutSubviews()
+        loadingView.frame = view.bounds
     }
 
     override open func viewDidAppear(_ animated: Bool) {
@@ -144,24 +147,17 @@ extension XBaseViewController {
 extension XBaseViewController {
     
     public func startAnimation() {
-        DispatchQueue.main.async { [weak self] () in
-            guard let weakSelf = self else { return }
-            if weakSelf.loadingView.superview == nil {
-                weakSelf.view.addSubview(weakSelf.loadingView)
-                weakSelf.loadingView.frame = weakSelf.view.bounds
-            }
-            weakSelf.loadingView.state = .loading
+        if loadingView.superview == nil {
+            view.addSubview(loadingView)
+            loadingView.frame = view.bounds
         }
-        
+        loadingView.state = .loading
     }
     
     public func stopAnimation(_ state: XLoadingView.State = .success, _ removeFromSuperView: Bool = true) {
-        DispatchQueue.main.async { [weak self] () in
-            guard let weakSelf = self else { return }
-            weakSelf.loadingView.state = state
-            if removeFromSuperView {
-                weakSelf.loadingView.removeFromSuperview()
-            }
+        loadingView.state = state
+        if removeFromSuperView {
+            loadingView.removeFromSuperview()
         }
     }
     
