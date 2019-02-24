@@ -8,14 +8,7 @@
 
 import UIKit
 
-enum XLoadingViewState: String {
-    case success = "加载成功"
-    case error = "加载失败，请检查网络"
-    case loading = "加载中..."
-    case empty = "暂无数据"
-}
-
-@objc protocol XLoadingViewDelegate: NSObjectProtocol {
+@objc public protocol XLoadingViewDelegate: NSObjectProtocol {
     
     // 点击事件
     @objc optional func loadingViewShouldEnableTap(_ loadingView: XLoadingView) -> Bool
@@ -28,6 +21,13 @@ enum XLoadingViewState: String {
 }
 
 open class XLoadingView: UIView {
+    
+    public enum State: String {
+        case success = "加载成功"
+        case error = "加载失败，请检查网络"
+        case loading = "加载中..."
+        case empty = "暂无数据"
+    }
     
     // 加载
     private lazy var loadingView: UIView = {
@@ -91,14 +91,14 @@ open class XLoadingView: UIView {
     private var isUp = true
     
     /// MARK: outter
-    var delegate: XLoadingViewDelegate? {
+    open var delegate: XLoadingViewDelegate? {
         didSet {
             if delegate?.loadingViewShouldEnableTap?(self) ?? false {
                 contentView.addGestureRecognizer(tapGesture)
             }
         }
     }
-    var state: XLoadingViewState = .loading {
+    open var state: XLoadingView.State = .loading {
         didSet {
             _resetState()
         }

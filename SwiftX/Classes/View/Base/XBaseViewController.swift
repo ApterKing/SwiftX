@@ -18,6 +18,7 @@ open class XBaseViewController: UIViewController, UIGestureRecognizerDelegate {
                 for item in items {
                     if let button = item.customView as? UIButton, button.tag == UIViewController.kBackItemTag {
                         if navigationItemBackStyle == .none {
+                            navigationItem.hidesBackButton = true
                             navigationItem.leftBarButtonItems?.remove(element: item)
                             return
                         }
@@ -50,7 +51,7 @@ open class XBaseViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     // loading
-    internal lazy var loadingView: XLoadingView = {
+    public lazy var loadingView: XLoadingView = {
         let loadingView = XLoadingView(frame: CGRect.zero)
         loadingView.state = .loading
         loadingView.delegate = self
@@ -59,6 +60,7 @@ open class XBaseViewController: UIViewController, UIGestureRecognizerDelegate {
 
     override open func viewDidLoad() {
         super.viewDidLoad()
+        registerKeyboardObserver()
         view.backgroundColor = UIColor.white
         navigationController?.navigationBar.isTranslucent = false
         tabBarController?.tabBar.isTranslucent = false
@@ -141,22 +143,29 @@ extension XBaseViewController {
 
 extension XBaseViewController {
     
-    func startAnimation() {
-        if loadingView.superview == nil {
-            view.addSubview(loadingView)
-            loadingView.frame = view.bounds
+    public func startAnimation() {
+        DispatchQueue.main.async { [weak self] () in
+            guard let weakSelf = self else { return }
+            if weakSelf.loadingView.superview == nil {
+                weakSelf.view.addSubview(weakSelf.loadingView)
+                weakSelf.loadingView.frame = weakSelf.view.bounds
+            }
+            weakSelf.loadingView.state = .loading
         }
-        loadingView.state = .loading
+        
     }
     
-    func stopAnimation(_ state: XLoadingViewState = .success, _ removeFromSuperView: Bool = true) {
-        loadingView.state = state
-        if removeFromSuperView {
-            loadingView.removeFromSuperview()
+    public func stopAnimation(_ state: XLoadingView.State = .success, _ removeFromSuperView: Bool = true) {
+        DispatchQueue.main.async { [weak self] () in
+            guard let weakSelf = self else { return }
+            weakSelf.loadingView.state = state
+            if removeFromSuperView {
+                weakSelf.loadingView.removeFromSuperview()
+            }
         }
     }
     
-    @objc func goBack() {
+    @objc public func goBack() {
         if navigationController?.viewControllers.count ?? 0 > 1 {
             navigationController?.popViewController(animated: true)
         } else if presentingViewController != nil {
@@ -168,19 +177,19 @@ extension XBaseViewController {
 
 extension XBaseViewController: XLoadingViewDelegate {
     
-    func loadingViewShouldEnableTap(_ loadingView: XLoadingView) -> Bool {
+    open func loadingViewShouldEnableTap(_ loadingView: XLoadingView) -> Bool {
         return true
     }
     
-    func loadingViewDidTapped(_ loadingView: XLoadingView) {
+    open func loadingViewDidTapped(_ loadingView: XLoadingView) {
         loadingView.state = .loading
     }
     
-    func loadingViewPromptImage(_ loadingView: XLoadingView) -> UIImage? {
+    open func loadingViewPromptImage(_ loadingView: XLoadingView) -> UIImage? {
         return nil
     }
     
-    func loadingViewPromptText(_ loadingView: XLoadingView) -> NSAttributedString? {
+    open func loadingViewPromptText(_ loadingView: XLoadingView) -> NSAttributedString? {
         switch loadingView.state {
         case .error:
             return NSAttributedString(string: "网络连接错误，点击重新加载", attributes: [NSAttributedString.Key.foregroundColor: UIColor.darkGray])

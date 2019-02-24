@@ -89,7 +89,7 @@ public class XHttp {
         let configuration = configuration ?? XHttp.Configuration.defaultConfiguration
         var newPath = path
         if !path.hasPrefix("http") {
-            newPath = configuration.host ?? "" + path
+            newPath = (configuration.host ?? "") + path
         }
         guard let url = URL(string: newPath) else { return nil }
         
@@ -114,7 +114,7 @@ public class XHttp {
                 do {
                     let data = try JSONSerialization.data(withJSONObject: params, options: .prettyPrinted)
                     if method == XHttp.Method.GET, let ext = String(data: data, encoding: .utf8) {
-                        request.url = url.appendingPathComponent(ext)
+                        request.url = URL(string: url.absoluteString + "?\(ext)")
                     } else if method == XHttp.Method.POST {
                         request.httpBody = data
                         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -131,7 +131,7 @@ public class XHttp {
                         return "\(result)\(result == "" ? "" : "&")\(key)=\(String(describing: value))"
                     })
                     if method == XHttp.Method.GET {
-                        request.url = url.appendingPathComponent(paramString)
+                        request.url = URL(string: url.absoluteString + "?\(paramString)")
                     } else if method == XHttp.Method.POST {
                         request.httpBody = paramString.data(using: .utf8)
                     }
@@ -139,7 +139,7 @@ public class XHttp {
             default:
                 if let paramString = params as? String {
                     if method == XHttp.Method.GET {
-                        request.url = url.appendingPathComponent(paramString)
+                        request.url = URL(string: url.absoluteString + "?\(paramString)")
                     } else if method == XHttp.Method.POST {
                         request.httpBody = paramString.data(using: .utf8)
                     }
@@ -182,5 +182,6 @@ public class XHttp {
         task.resume()
         return task
     }
+    
 }
 

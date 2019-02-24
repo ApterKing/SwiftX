@@ -39,6 +39,7 @@ Pod::Spec.new do |s|
     ss.source_files = 'SwiftX/Classes/Extensions/**/*.swift'
 
     ss.frameworks = 'UIKit', 'Foundation', 'CoreGraphics'
+    ss.dependency 'Kingfisher'
   end
 
   # --------------  Network网络请求、下载、上传 ----------------
