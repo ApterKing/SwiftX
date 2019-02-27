@@ -44,7 +44,7 @@ public extension UIImageView {
         let radius = cornerRadius ?? min(s.width, s.height) / 2
         let scale = UIScreen.main.scale
         let roundProcessor = RoundCornerImageProcessor(cornerRadius: radius * scale, targetSize: CGSize(width: s.width * scale, height: s.height * scale))
-        ml_setImage(url: url, placeholder: placeholder, size: s, options: [.processor(roundProcessor), .cacheSerializer(RoundCornerImageCacheSerializer.default)], progressBlock: progressBlock, completionHandler: completionHandler)
+        kf_setImage(url: url, placeholder: placeholder, size: s, options: [.processor(roundProcessor), .cacheSerializer(RoundCornerImageCacheSerializer.default)], progressBlock: progressBlock, completionHandler: completionHandler)
     }
     
     public func kf_setImage(
@@ -57,10 +57,10 @@ public extension UIImageView {
         
         let s = size ?? CGSize(width: min(bounds.size.width, 1242), height: min(bounds.size.height, 2208))
         let url = URL(string: urlString ?? "")
-        ml_setImage(url: url, placeholder: placeholder, size: s, options: options, progressBlock: progressBlock, completionHandler: completionHandler)
+        kf_setImage(url: url, placeholder: placeholder, size: s, options: options, progressBlock: progressBlock, completionHandler: completionHandler)
     }
     
-    public func ml_setImage(
+    public func kf_setImage(
         url: URL?,
         placeholder: UIImage?,
         size: CGSize? = nil,
