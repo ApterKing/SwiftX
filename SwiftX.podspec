@@ -39,20 +39,17 @@ Pod::Spec.new do |s|
     ss.source_files = 'SwiftX/Classes/Extensions/**/*.swift'
 
     ss.frameworks = 'UIKit', 'Foundation', 'CoreGraphics'
-    ss.dependency 'Kingfisher'
   end
 
   # --------------  Network网络请求、下载、上传 ----------------
   s.subspec 'Network' do |ss|
     ss.source_files = 'SwiftX/Classes/Network/*.swift', 'SwiftX/Classes/Network/Core/*.swift'
-
     ss.frameworks = 'Foundation'
   end
 
   # --------------  NetworkRx对网络请求Rx的封装 ----------------
   s.subspec 'NetworkRx' do |ss|
     ss.source_files = 'SwiftX/Classes/Network/Rx/*.swift'
-
     ss.frameworks = 'Foundation'
     ss.dependency 'SwiftX/Network'
     ss.dependency 'RxSwift'
@@ -61,14 +58,12 @@ Pod::Spec.new do |s|
   # --------------  Cache 数据缓存 ----------------
   s.subspec 'Cache' do |ss|
     ss.source_files = 'SwiftX/Classes/Cache/**/*.swift'
-
     ss.frameworks = 'Foundation'
   end
 
   # ---------------  JSON 数据解析 -----------
   s.subspec 'JSON' do |ss|
     ss.source_files = 'SwiftX/Classes/JSON/**/*.swift'
-
     ss.frameworks = 'Foundation'
   end
 
@@ -76,30 +71,26 @@ Pod::Spec.new do |s|
   s.subspec 'View' do |ss|
 
     ss.subspec 'Base' do |sss|
-    	sss.source_files = 'SwiftX/Classes/View/Base/*.swift'
-		  sss.resources = ['SwiftX/Assets/Base/*.png']
-
+      sss.source_files = 'SwiftX/Classes/View/Base/*.swift'
+      sss.resources = ['SwiftX/Assets/Base/*.png']
       sss.frameworks = 'UIKit', 'Foundation'
     end
 
     ss.subspec 'Custom' do |sss|
-    	sss.source_files = 'SwiftX/Classes/View/Custom/*.swift'
+      sss.source_files = 'SwiftX/Classes/View/Custom/*.swift'
       sss.resources = ['SwiftX/Assets/Custom/*.png']
-
       sss.frameworks = 'UIKit', 'Foundation'
     end
 	
     ss.subspec 'QRCode' do |sss|
-    	sss.source_files = 'SwiftX/Classes/View/QRCode/*.swift'
+      sss.source_files = 'SwiftX/Classes/View/QRCode/*.swift'
       sss.resources = ['SwiftX/Assets/QRCode/*.png']
-
       sss.frameworks = 'UIKit', 'Foundation', 'Photos', 'AssetsLibrary'
-    	ss.dependency 'SwiftX/Extensions'
+      sss.dependency 'SwiftX/Extensions'
     end
 
     ss.subspec 'Hybird' do |sss|
-    	sss.source_files = 'SwiftX/Classes/View/Hybird/*.swift'
-
+      sss.source_files = 'SwiftX/Classes/View/Hybird/*.swift'
       sss.frameworks = 'UIKit', 'Foundation'
     end
   end
@@ -107,21 +98,18 @@ Pod::Spec.new do |s|
   # ---------------  Bluetooth  -----------
   s.subspec 'Bluetooth' do |ss|
     ss.source_files = 'SwiftX/Classes/Bluetooth/*.swift'
-
     ss.frameworks = 'CoreBluetooth', 'Foundation'
   end
 
   # --------------  Cache  ----------------
   s.subspec 'Cache' do |ss|
     ss.source_files = 'SwiftX/Classes/Cache/*.swift'
-
     ss.frameworks = 'Foundation'
   end
 
   # -------------- RN HotUpdate ---------------
   s.subspec 'XPush' do |ss|
     ss.source_files = 'SwiftX/Classes/XPush/*.{swift,h,m}'
-    
     ss.dependency 'SSZipArchive', '~> 2.1.4'
     ss.dependency 'SwiftX/Extensions'
   end
@@ -132,21 +120,18 @@ Pod::Spec.new do |s|
     # Realm
     ss.subspec 'Realm' do |sss|
       sss.source_files = 'SwiftX/Classes/ThirdParty/Realm/*.swift'
-      
       sss.dependency 'RealmSwift', '~> 3.13.0'
     end
     
     # Kingfisher
     ss.subspec 'Kingfisher' do |sss|
       sss.source_files = 'SwiftX/Classes/ThirdParty/Kingfisher/*.swift'
-      
       sss.dependency 'Kingfisher'
     end
     
     # Toaster
     ss.subspec 'Toaster' do |sss|
       sss.source_files = 'SwiftX/Classes/ThirdParty/Toaster/*.swift'
-      
       sss.dependency 'Toaster'
     end
     
@@ -157,38 +142,31 @@ Pod::Spec.new do |s|
 
     # Alipay: 2.0
     ss.subspec 'Alipay' do |sss|
-
-      sss.resources = 'SwiftX/Classes/OpenSDK/Vendors/Alipay/*.bundle'
-
-      sss.vendored_frameworks = 'SwiftX/Classes/OpenSDK/Vendors/Alipay/*.framework'
-      sss.vendored_libraries = 'SwiftX/Classes/OpenSDK/Vendors/Alipay/*.a'
-      
+      sss.source_files = 'SwiftX/Classes/OpenSDK/Alipay/*.{swift}'
+      sss.resources = 'SwiftX/Classes/OpenSDK/Alipay/*.bundle'
+      sss.vendored_frameworks = 'SwiftX/Classes/OpenSDK/Alipay/*.framework'
+      sss.vendored_libraries = 'SwiftX/Classes/OpenSDK/Alipay/*.a'
     end
 
     # WeChat: 1.8.4
     ss.subspec 'WeChat' do |sss|
-
-      sss.source_files = 'SwiftX/Classes/OpenSDK/Vendors/WeChat/*.{h,m}'
-
-      sss.vendored_libraries = 'SwiftX/Classes/OpenSDK/Vendors/WeChat/*.a'
-      
+      sss.source_files = 'SwiftX/Classes/OpenSDK/WeChat/*.{swift,h,m}'
+      sss.vendored_libraries = 'SwiftX/Classes/OpenSDK/WeChat/*.a'
+      sss.dependency 'SwiftX/Network'
+      sss.dependency 'SwiftX/JSON'
     end
 
     # QQ: 3.3.3.0
     ss.subspec 'QQ' do |sss|
-
-      sss.vendored_frameworks = 'SwiftX/Classes/OpenSDK/Vendors/QQ/*.framework'
-
+      sss.source_files = 'SwiftX/Classes/OpenSDK/QQ/*.{swift}'
+      sss.vendored_frameworks = 'SwiftX/Classes/OpenSDK/QQ/*.framework'
     end
 
     # Weibo: 3.2.3
     ss.subspec 'Weibo' do |sss|
-
-      sss.source_files = 'SwiftX/Classes/OpenSDK/Vendors/Weibo/*.{h,m}'
-
-      sss.resources = 'SwiftX/Classes/OpenSDK/Vendors/Weibo/*.bundle'
-      sss.vendored_libraries = 'SwiftX/Classes/OpenSDK/Vendors/Weibo/*.a'
-      
+      sss.source_files = 'SwiftX/Classes/OpenSDK/Weibo/*.{swift,h,m}'
+      sss.resources = 'SwiftX/Classes/OpenSDK/Weibo/*.bundle'
+      sss.vendored_libraries = 'SwiftX/Classes/OpenSDK/Weibo/*.a'
     end
 
     s.frameworks = 'Photos', 'ImageIO', 'SystemConfiguration', 'CoreText', 'QuartzCore', 'Security', 'UIKit', 'Foundation', 'CoreGraphics','CoreTelephony'
