@@ -89,6 +89,40 @@ public extension UIImage {
     
 }
 
+// MARK: 图片转换为CVPixelBuffer
+public extension UIImage {
+    
+    public func toCVPixelBuffer() -> CVPixelBuffer? {
+        
+        guard let cgImage = self.cgImage else { return nil }
+        
+        let options: [NSObject: AnyObject] = [
+            kCVPixelBufferCGImageCompatibilityKey: true as AnyObject,
+            kCVPixelBufferCGBitmapContextCompatibilityKey: true as AnyObject,
+            kCVPixelBufferIOSurfacePropertiesKey: [:] as AnyObject,
+            ]
+        let width = cgImage.width
+        let height = cgImage.height
+        var pixelBuffer: CVPixelBuffer? = nil
+        let status = CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_32BGRA, options as CFDictionary?, &pixelBuffer)
+        
+        guard let pxBuffer = pixelBuffer, status == kCVReturnSuccess else { return nil }
+
+        CVPixelBufferLockBaseAddress(pxBuffer, CVPixelBufferLockFlags.readOnly)
+        let pixelData = CVPixelBufferGetBaseAddress(pxBuffer)
+        let rgbColorSpace = CGColorSpaceCreateDeviceRGB()
+        
+        guard let context = CGContext(data: pixelData, width: width, height: height, bitsPerComponent: 8, bytesPerRow: CVPixelBufferGetBytesPerRow(pxBuffer), space: rgbColorSpace, bitmapInfo: CGBitmapInfo(rawValue: CGBitmapInfo.byteOrder32Little.rawValue | CGImageAlphaInfo.premultipliedFirst.rawValue).rawValue) else { return nil }
+        
+        context.concatenate(CGAffineTransform.identity)
+        context.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
+        CVPixelBufferUnlockBaseAddress(pxBuffer, CVPixelBufferLockFlags.readOnly);
+        
+        return pxBuffer
+    }
+    
+}
+
 // MARK: 图片缩放
 public extension UIImage {
     
