@@ -77,30 +77,30 @@ Pod::Spec.new do |s|
 
     ss.subspec 'Base' do |sss|
     	sss.source_files = 'SwiftX/Classes/View/Base/*.swift'
-		sss.resources = ['SwiftX/Assets/Base/*.png']
+		  sss.resources = ['SwiftX/Assets/Base/*.png']
 
-        sss.frameworks = 'UIKit', 'Foundation'
+      sss.frameworks = 'UIKit', 'Foundation'
     end
 
     ss.subspec 'Custom' do |sss|
     	sss.source_files = 'SwiftX/Classes/View/Custom/*.swift'
-	sss.resources = ['SwiftX/Assets/Custom/*.png']
+      sss.resources = ['SwiftX/Assets/Custom/*.png']
 
-        sss.frameworks = 'UIKit', 'Foundation'
+      sss.frameworks = 'UIKit', 'Foundation'
     end
 	
     ss.subspec 'QRCode' do |sss|
     	sss.source_files = 'SwiftX/Classes/View/QRCode/*.swift'
-	sss.resources = ['SwiftX/Assets/QRCode/*.png']
+      sss.resources = ['SwiftX/Assets/QRCode/*.png']
 
-        sss.frameworks = 'UIKit', 'Foundation', 'Photos', 'AssetsLibrary'
+      sss.frameworks = 'UIKit', 'Foundation', 'Photos', 'AssetsLibrary'
     	ss.dependency 'SwiftX/Extensions'
     end
 
     ss.subspec 'Hybird' do |sss|
     	sss.source_files = 'SwiftX/Classes/View/Hybird/*.swift'
 
-        sss.frameworks = 'UIKit', 'Foundation'
+      sss.frameworks = 'UIKit', 'Foundation'
     end
   end
 
@@ -109,13 +109,6 @@ Pod::Spec.new do |s|
     ss.source_files = 'SwiftX/Classes/Bluetooth/*.swift'
 
     ss.frameworks = 'CoreBluetooth', 'Foundation'
-  end
-
-  # ---------------  Realm --------------
-  s.subspec 'Realm' do |ss|
-    ss.source_files = 'SwiftX/Classes/Realm/*.swift'
-
-    ss.dependency 'RealmSwift', '~> 3.13.0'
   end
 
   # --------------  Cache  ----------------
@@ -132,7 +125,32 @@ Pod::Spec.new do |s|
     ss.dependency 'SSZipArchive', '~> 2.1.4'
     ss.dependency 'SwiftX/Extensions'
   end
-
+  
+  # --------------  三方库  ----------------
+  s.subspec 'ThirdParty' do |ss|
+    
+    # Realm
+    ss.subspec 'Realm' do |sss|
+      sss.source_files = 'SwiftX/Classes/ThirdParty/Realm/*.swift'
+      
+      sss.dependency 'RealmSwift', '~> 3.13.0'
+    end
+    
+    # Kingfisher
+    ss.subspec 'Kingfisher' do |sss|
+      sss.source_files = 'SwiftX/Classes/ThirdParty/Kingfisher/*.swift'
+      
+      sss.dependency 'Kingfisher'
+    end
+    
+    # Toaster
+    ss.subspec 'Toaster' do |sss|
+      sss.source_files = 'SwiftX/Classes/ThirdParty/Toaster/*.swift'
+      
+      sss.dependency 'Toaster'
+    end
+    
+  end
   # --------------  OpenSDK 三方登录、支付工具  ----------------
   s.subspec 'OpenSDK' do |ss|
     ss.source_files = 'SwiftX/Classes/OpenSDK/*.{swift,h,m}'

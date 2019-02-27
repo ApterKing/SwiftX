@@ -20,7 +20,7 @@ public extension XHttp {
          *  - Parameter: handler 回调 for more @see: XHttp.Result.Downloader
          */
         static public func downloadTask(with url: URL, location fileURL: URL? = nil, handler: ((_ result: XHttp.Result.Downloader) -> Void)? = nil) -> URLSessionDownloadTask {
-            return downloadTask(with: URLRequest(url: url), handler: handler)
+            return downloadTask(with: URLRequest(url: url), location: fileUrl, handler: handler)
         }
         
         /**
