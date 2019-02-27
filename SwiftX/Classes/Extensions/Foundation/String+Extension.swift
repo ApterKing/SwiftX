@@ -71,10 +71,15 @@ public extension String {
     }
     
     func containPhone() -> Bool {
-        guard let regex = try? NSRegularExpression(pattern: "1[3-8][0-9]{9}", options: [.caseInsensitive]) else {return false}
+        guard let regex = try? NSRegularExpression(pattern: "1[3-9][0-9]{9}", options: [.caseInsensitive]) else {return false}
         let matchNum = regex.numberOfMatches(in: self, options: [], range: NSRange(location: 0, length: (self as NSString).length))
         
         return matchNum > 0
+    }
+    
+    func isEmpty() -> Bool {
+        let text = trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        return text == ""
     }
     
     func vaildPassword() -> (bool: Bool, error: String) {
@@ -138,6 +143,14 @@ public extension String {
 
 // MARK: size
 public extension String {
+    
+    func heightWith(fontSize: CGFloat, limitWidth: CGFloat, numberOfLines: Int = 0) -> CGFloat {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: fontSize)
+        label.numberOfLines = numberOfLines
+        label.text = self
+        return label.sizeThatFits(CGSize(width: limitWidth, height: CGFloat.greatestFiniteMagnitude)).height
+    }
     
     func boundingSize(with size: CGSize, font: UIFont, lineBreakMode: NSLineBreakMode = .byWordWrapping, option: NSStringDrawingOptions = .usesLineFragmentOrigin, context: NSStringDrawingContext? = nil) -> CGSize {
         return boundingRect(with: size, font: font, lineBreakMode: lineBreakMode, option: option, context: context).size
