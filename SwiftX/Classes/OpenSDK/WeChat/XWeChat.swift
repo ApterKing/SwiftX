@@ -14,7 +14,8 @@ final public class XWeChat: NSObject {
     private override init() {}
     
     // 在调用前必须注册
-    static func register(appKey: String, appSecret: String) {
+    public func register(appKey: String, appSecret: String) {
+        WXApi.registerApp(appKey)
         UserDefaults.standard.set(appKey, forKey: "com.SwiftX.OpenSDK.WeChat.appKey")
         UserDefaults.standard.set(appSecret, forKey: "com.SwiftX.OpenSDK.WeChat.appSecret")
     }
@@ -96,13 +97,79 @@ public extension XWeChat  {
     }
     
     final public class AuthEntity: NSObject, Codable {
-        var openId: String?
-        var nickName: String?
+        var openid: String?
+        var nickname: String?
         var headImgUrl: String?
-        var sex: Int?               // 0 男， 1女
+        var gender: Gender?
         var province: String?
+        var city: String?
         var country: String?
         var unionid: String?
+        
+        enum CodingKeys: String, CodingKey {
+            case openid
+            case nickname
+            case headImgUrl = "headimgurl"
+            case gender = "sex"
+            case province
+            case city
+            case country
+            case unionid
+        }
+        
+        enum Gender: Int {
+            case unknown = -1
+            case male = 1
+            case female = 2
+            
+            var chineseDescription: String {
+                switch self {
+                case .male:
+                    return "男"
+                case .female:
+                    return "女"
+                default:
+                    return "未知"
+                }
+            }
+            
+            var englishDescription: String {
+                switch self {
+                case .male:
+                    return "male"
+                case .female:
+                    return "female"
+                default:
+                    return "unknown"
+                }
+            }
+        }
+        
+        public init(from decoder: Decoder) throws {
+            var container = try decoder.container(keyedBy: CodingKeys.self)
+            openid = try container.decodeIfPresent(String.self, forKey: .openid)
+            nickname = try container.decodeIfPresent(String.self, forKey: .nickname)
+            headImgUrl = try container.decodeIfPresent(String.self, forKey: .headImgUrl)
+            let genderInt = try container.decodeIfPresent(Int.self, forKey: .gender)
+            gender = Gender(rawValue: genderInt ?? -1) ?? .unknown
+            province = try container.decodeIfPresent(String.self, forKey: .province)
+            city = try container.decodeIfPresent(String.self, forKey: .city)
+            country = try container.decodeIfPresent(String.self, forKey: .country)
+            unionid = try container.decodeIfPresent(String.self, forKey: .unionid)
+        }
+        
+        public func encode(to encoder: Encoder) throws {
+            var container = try encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(openid, forKey: .openid)
+            try container.encode(nickname, forKey: .nickname)
+            try container.encode(headImgUrl, forKey: .headImgUrl)
+            try container.encode(gender?.rawValue, forKey: .gender)
+            try container.encode(province, forKey: .province)
+            try container.encode(city, forKey: .city)
+            try container.encode(country, forKey: .country)
+            try container.encode(unionid, forKey: .unionid)
+        }
+        
     }
     
 }

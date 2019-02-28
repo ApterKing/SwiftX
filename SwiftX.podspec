@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'SwiftX'
-  s.version          = '0.1.0'
+  s.version          = '0.1.1'
   s.summary          = 'Swift 相关扩展.'
 
   s.description      = <<-DESC
@@ -24,6 +24,8 @@ Pod::Spec.new do |s|
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '10.0'
+  s.source_files = 'SwiftX/Classes/*.h'
+  s.public_header_files = 'SwiftX/Classes/*.h'
 
   s.default_subspecs = 'Base'
 
@@ -148,17 +150,20 @@ Pod::Spec.new do |s|
       sss.vendored_libraries = 'SwiftX/Classes/OpenSDK/Alipay/*.a'
     end
 
-    # WeChat: 1.8.4
+    # WeChat: 1.8.4 (含支付功能）
     ss.subspec 'WeChat' do |sss|
       sss.source_files = 'SwiftX/Classes/OpenSDK/WeChat/*.{swift,h,m}'
       sss.vendored_libraries = 'SwiftX/Classes/OpenSDK/WeChat/*.a'
       sss.dependency 'SwiftX/Network'
       sss.dependency 'SwiftX/JSON'
+      s.frameworks = 'SystemConfiguration', 'Security', 'CoreTelephony', 'CFNetwork', 'CoreGraphics'
+      s.libraries = 'sqlite3', 'z', 'c++'
     end
 
     # QQ: 3.3.3.0
     ss.subspec 'QQ' do |sss|
-      sss.source_files = 'SwiftX/Classes/OpenSDK/QQ/*.{swift}'
+      sss.source_files = 'SwiftX/Classes/OpenSDK/QQ/*.{swift}', 'SwiftX/Classes/OpenSDK/QQ/*.framework/Headers/**/*.h'
+      sss.public_header_files = 'SwiftX/Classes/OpenSDK/QQ/*.framework/Headers/**/*.h'
       sss.vendored_frameworks = 'SwiftX/Classes/OpenSDK/QQ/*.framework'
     end
 
@@ -169,9 +174,6 @@ Pod::Spec.new do |s|
       sss.vendored_libraries = 'SwiftX/Classes/OpenSDK/Weibo/*.a'
     end
 
-    s.frameworks = 'Photos', 'ImageIO', 'SystemConfiguration', 'CoreText', 'QuartzCore', 'Security', 'UIKit', 'Foundation', 'CoreGraphics','CoreTelephony'
-    s.libraries = 'sqlite3', 'z'
-    
   end
 
 end

@@ -14,7 +14,7 @@ final public class XWeibo: NSObject {
     private override init() {}
     
     // 在调用前必须注册
-    static func register(appKey: String) {
+    public func register(appKey: String) {
         WeiboSDK.registerApp(appKey)
     }
     
