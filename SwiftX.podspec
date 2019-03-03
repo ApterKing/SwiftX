@@ -16,18 +16,22 @@ Pod::Spec.new do |s|
 			Extensions: Foundation、UIKit、CoreGraphics
                        DESC
 
-  s.homepage         = 'https://github.com/wangcong/Swift-X'
+  s.homepage         = 'https://github.com/wangcong/SwiftX'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'wangcong' => 'wangcccong@foxmail.com' }
-  s.source           = { :git => 'https://github.com/wangcong/Swift-X.git', :tag => s.version.to_s }
+  s.source           = { :git => 'https://github.com/wangcong/SwiftX.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '10.0'
-  s.source_files = 'SwiftX/Classes/*.h'
-  s.public_header_files = 'SwiftX/Classes/*.h'
-
-  s.default_subspecs = 'Base'
+  
+  s.default_subspecs = 'Core'
+  
+  # ---------------  Core  -----------
+  s.subspec 'Core' do |ss|
+    ss.source_files = 'SwiftX/Classes/*.h'
+    ss.public_header_files = 'SwiftX/Classes/SwiftX/*.h'
+  end
 
   # ---------------  Globals  -----------
   s.subspec 'Globals' do |ss|
@@ -140,8 +144,9 @@ Pod::Spec.new do |s|
   end
   # --------------  OpenSDK 三方登录、支付工具  ----------------
   s.subspec 'OpenSDK' do |ss|
-    ss.source_files = 'SwiftX/Classes/OpenSDK/*.{swift,h,m}'
-
+    
+    ss.dependency 'SwiftX/Core'
+    
     # Alipay: 2.0
     ss.subspec 'Alipay' do |sss|
       sss.source_files = 'SwiftX/Classes/OpenSDK/Alipay/*.{swift}'
