@@ -10,7 +10,7 @@ import UIKit
 
 final public class XWeibo: NSObject {
     
-    static let `default` = XWeibo()
+    public static let `default` = XWeibo()
     private override init() {}
     
     // 在调用前必须注册

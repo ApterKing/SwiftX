@@ -10,7 +10,7 @@ import UIKit
 
 final public class XQQ: NSObject {
     
-    static let `default` = XQQ()
+    public static let `default` = XQQ()
     private override init() {}
     private var _auth: TencentOAuth?
     

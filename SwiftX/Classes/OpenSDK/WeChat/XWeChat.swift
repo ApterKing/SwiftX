@@ -10,7 +10,7 @@ import UIKit
 
 final public class XWeChat: NSObject {
     
-    static let `default` = XWeChat()
+    public static let `default` = XWeChat()
     private override init() {}
     
     // 在调用前必须注册
