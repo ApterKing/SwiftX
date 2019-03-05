@@ -153,6 +153,8 @@ Pod::Spec.new do |s|
       sss.public_header_files = 'SwiftX/Classes/OpenSDK/Alipay/*.framework/Headers/**/*.h'
       sss.resources = 'SwiftX/Classes/OpenSDK/Alipay/*.bundle'
       sss.vendored_frameworks = 'SwiftX/Classes/OpenSDK/Alipay/*.framework'
+      sss.frameworks = 'CoreMotion', 'SystemConfiguration', 'CoreTelephony', 'QuartzCore', 'CoreText', 'CoreGraphics', 'UIKit', 'Foundation', 'CFNetwork', 'Security'
+      sss.libraries = 'z', 'c++'
     end
 
     # WeChat: 1.8.4 (含支付功能）
@@ -161,8 +163,8 @@ Pod::Spec.new do |s|
       sss.vendored_libraries = 'SwiftX/Classes/OpenSDK/WeChat/*.a'
       sss.dependency 'SwiftX/Network'
       sss.dependency 'SwiftX/JSON'
-      s.frameworks = 'SystemConfiguration', 'Security', 'CoreTelephony', 'CFNetwork', 'CoreGraphics'
-      s.libraries = 'sqlite3', 'z', 'c++'
+      sss.frameworks = 'SystemConfiguration', 'Security', 'CoreTelephony', 'CFNetwork', 'CoreGraphics'
+      sss.libraries = 'sqlite3', 'z', 'c++'
     end
 
     # QQ: 3.3.3.0

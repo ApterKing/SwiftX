@@ -21,7 +21,7 @@ public extension UIViewController {
     
     // 是否隐藏NavigationBar
     static private var kNavigationBarHidden = "kNavigationBarHidden"
-    internal var isTopBarHidden: Bool {
+    public var isNavigationBarHiddenIfNeeded: Bool {
         get {
             return objc_getAssociatedObject(self, &UIViewController.kNavigationBarHidden) as? Bool ?? false
         }

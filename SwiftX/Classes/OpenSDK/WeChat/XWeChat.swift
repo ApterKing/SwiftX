@@ -26,8 +26,12 @@ final public class XWeChat: NSObject {
         return WXApi.handleOpen(url, delegate: self)
     }
     
-    /// MARK: 登录
-    public typealias AuthHandler = ((Error?, AuthEntity?) -> Void)
+    /** MARK: 登录回调
+     *  @param  error: 错误
+     *  @param  entity: 解析后的数据
+     *  @param  jsonResponse: 未解析的数据
+     */
+    public typealias AuthHandler = ((_ error: Error?, _ entity: AuthEntity?, _ jsonResponse: [AnyHashable: Any]?) -> Void)
     private var authHandler: AuthHandler?
     
     
@@ -61,17 +65,17 @@ public extension XWeChat  {
                 guard let weakSelf = self else { return }
                 switch result {
                 case .success(let data):
-                    if let dict = data as? [String: AnyObject], let token = dict["access_token"] as? String, let openId = dict["openid"] as? String {
+                    if let dict = data as? [AnyHashable: Any], let token = dict["access_token"] as? String, let openId = dict["openid"] as? String {
                         weakSelf._authUserInfo(token: token, openId: openId)
                     } else {
-                        weakSelf.authHandler?(NSError(domain: "com.SwiftX.OpenSDK.WeChat", code: Int(WechatAuth_Err_NormalErr.rawValue), description: "未注册appKey或者appSecret"), nil)
+                        weakSelf.authHandler?(NSError(domain: "com.SwiftX.OpenSDK.WeChat", code: Int(WechatAuth_Err_NormalErr.rawValue), description: "未注册appKey或者appSecret"), nil, nil)
                     }
                 case .failure(let error):
-                    weakSelf.authHandler?(error, nil)
+                    weakSelf.authHandler?(error, nil, nil)
                 }
             }
         } else {
-            authHandler?(NSError(domain: "com.SwiftX.OpenSDK.WeChat", code: Int(WechatAuth_Err_NormalErr.rawValue), description: "未注册appKey或者appSecret"), nil)
+            authHandler?(NSError(domain: "com.SwiftX.OpenSDK.WeChat", code: Int(WechatAuth_Err_NormalErr.rawValue), description: "未注册appKey或者appSecret"), nil, nil)
         }
     }
     
@@ -84,12 +88,12 @@ public extension XWeChat  {
             switch result {
             case .success(let data):
                 if let entity = try? JSONDecoder.decode(AuthEntity.self, from: data) {
-                    weakSelf.authHandler?(nil, entity)
+                    weakSelf.authHandler?(nil, entity, data as? [AnyHashable: Any])
                 } else {
-                    weakSelf.authHandler?(NSError(domain: "com.SwiftX.OpenSDK.WeChat", code: Int(WechatAuth_Err_NormalErr.rawValue), description: "解析用户信息失败"), nil)
+                    weakSelf.authHandler?(NSError(domain: "com.SwiftX.OpenSDK.WeChat", code: Int(WechatAuth_Err_NormalErr.rawValue), description: "解析用户信息失败"), nil, nil)
                 }
             case .failure(let error):
-                weakSelf.authHandler?(error, nil)
+                weakSelf.authHandler?(error, nil, nil)
             }
         }
     }
@@ -211,7 +215,7 @@ extension XWeChat: WXApiDelegate {
             if response.errCode == WXSuccess.rawValue {
                 _authToken(by: response.code ?? "")
             } else {
-                authHandler?(NSError(domain: "com.SwiftX.OpenSDK.WeChat", code: Int(response.errCode), description: response.errStr), nil)
+                authHandler?(NSError(domain: "com.SwiftX.OpenSDK.WeChat", code: Int(response.errCode), description: response.errStr), nil, nil)
             }
         } else if let response = resp as? PayResp {   // 支付
             if response.errCode == WXSuccess.rawValue {

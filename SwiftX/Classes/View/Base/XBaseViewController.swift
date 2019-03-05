@@ -62,7 +62,6 @@ open class XBaseViewController: UIViewController, UIGestureRecognizerDelegate {
 
     override open func viewDidLoad() {
         super.viewDidLoad()
-//        registerKeyboardObserver()
         view.backgroundColor = UIColor.white
         navigationController?.navigationBar.isTranslucent = false
         tabBarController?.tabBar.isTranslucent = false
@@ -87,15 +86,19 @@ open class XBaseViewController: UIViewController, UIGestureRecognizerDelegate {
 
     override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        isTopBarHidden = navigationController?.isNavigationBarHidden ?? false
+        isNavigationBarHiddenIfNeeded = navigationController?.isNavigationBarHidden ?? false
+    }
+    
+    open override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        navigationController?.setNavigationBarHidden(isNavigationBarHiddenIfNeeded, animated: true)
     }
 
     override open func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
-        if navigationController != nil {
-            navigationController?.setNavigationBarHidden(isTopBarHidden, animated: true)
-        }
+        navigationController?.setNavigationBarHidden(isNavigationBarHiddenIfNeeded, animated: true)
     }
 
     override open func didReceiveMemoryWarning() {

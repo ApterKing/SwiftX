@@ -18,7 +18,7 @@ final public class XQQ: NSObject {
     }
     
     public func isInstalled() -> Bool {
-        return WXApi.isWXAppInstalled() && WXApi.isWXAppSupport()
+        return QQApiInterface.isQQInstalled() && QQApiInterface.isQQSupportApi()
     }
     
     public func handleOpen(url: URL) -> Bool {
@@ -37,8 +37,12 @@ final public class XQQ: NSObject {
         return UIApplication.shared.canOpenURL(URL(string: "mqqopensdkapiV3://")!)
     }
     
-    /// MARK: 登录
-    public typealias AuthHandler = ((Error?, AuthEntity?) -> Void)
+    /** MARK: 登录回调
+     *  @param  error: 错误
+     *  @param  entity: 解析后的数据
+     *  @param  jsonResponse: 未解析的数据
+     */
+    public typealias AuthHandler = ((_ error: Error?, _ entity: AuthEntity?, _ jsonResponse: [AnyHashable: Any]?) -> Void)
     private var authHandler: AuthHandler?
 
 }
@@ -54,9 +58,9 @@ public extension XQQ {
     private func _handle(error: Error?, response: APIResponse?) {
         if let jsonResponse = response?.jsonResponse {
             let entity = try? JSONDecoder.decode(AuthEntity.self, from: jsonResponse)
-            authHandler?(nil, entity)
+            authHandler?(nil, entity, jsonResponse)
         } else {
-            authHandler?(error, nil)
+            authHandler?(error, nil, nil)
         }
     }
     
