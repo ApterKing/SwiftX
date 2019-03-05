@@ -70,37 +70,39 @@ public extension UIViewController {
 /// MARK: UINavigationItem
 public extension UIViewController {
     
-    public func leftBarButtonItem(title: String?, handler: ((_ button: UIButton) -> Void)? = nil) -> UIBarButtonItem {
+    public func leftBarButtonItem(title: String?, size: CGSize = CGSize(width: 80, height: 44), handler: ((_ button: UIButton) -> Void)? = nil) -> UIBarButtonItem {
         return customBarButtonItem(options:[
                                         .title(title, UIColor(hexColor: "#5495ff"), .normal),
                                         .title(title, UIColor(hexColor: "#a0a0a5"), .disabled),
                                         .title(title, UIColor(hexColor: "#5495ff").withAlphaComponent(0.7), .highlighted)
                                     ],
+                                   size: size,
                                    isBackItem: false,
                                    left: true,
                                    handler: handler)
     }
     
-    public func rightBarButtonItem(title: String?, handler: ((_ button: UIButton) -> Void)? = nil) -> UIBarButtonItem {
+    public func rightBarButtonItem(title: String?, size: CGSize = CGSize(width: 80, height: 44), handler: ((_ button: UIButton) -> Void)? = nil) -> UIBarButtonItem {
         return customBarButtonItem(options:[
                                         .title(title, UIColor(hexColor: "#5495ff"), .normal),
                                         .title(title, UIColor(hexColor: "#a0a0a5"), .disabled),
                                         .title(title, UIColor(hexColor: "#5495ff").withAlphaComponent(0.7), .highlighted)
                                     ],
+                                   size: size,
                                    isBackItem: false,
                                    left: false,
                                    handler: handler)
     }
     
-    public func leftBarButtonItem(image: UIImage?, isBackItem: Bool = false, handler: ((_ button: UIButton) -> Void)? = nil) -> UIBarButtonItem {
-        return customBarButtonItem(options: [.image(image, .normal)], isBackItem: isBackItem, left: true, handler: handler)
+    public func leftBarButtonItem(image: UIImage?, size: CGSize = CGSize(width: 44, height: 44), isBackItem: Bool = false, handler: ((_ button: UIButton) -> Void)? = nil) -> UIBarButtonItem {
+        return customBarButtonItem(options: [.image(image, .normal)], size: size, isBackItem: isBackItem, left: true, handler: handler)
     }
     
-    public func rightBarButtonItem(image: UIImage?, handler: ((_ button: UIButton) -> Void)? = nil) -> UIBarButtonItem {
-        return customBarButtonItem(options: [.image(image, .normal)], isBackItem: false, left: false, handler: handler)
+    public func rightBarButtonItem(image: UIImage?, size: CGSize = CGSize(width: 44, height: 44), handler: ((_ button: UIButton) -> Void)? = nil) -> UIBarButtonItem {
+        return customBarButtonItem(options: [.image(image, .normal)], size: size, isBackItem: false, left: false, handler: handler)
     }
     
-    fileprivate func customBarButtonItem(options: [UIControlStateOption], isBackItem: Bool = false, left: Bool = true, handler: ((_ button: UIButton) -> Void)? = nil) -> UIBarButtonItem {
+    public func customBarButtonItem(options: [UIControlStateOption], size: CGSize = CGSize(width: 80, height: 44), isBackItem: Bool = false, left: Bool = true, handler: ((_ button: UIButton) -> Void)? = nil) -> UIBarButtonItem {
         guard options.count != 0 else { return UIBarButtonItem() }
         let button = CustomBarButton(frame: CGRect.zero)
         if isBackItem {
@@ -109,11 +111,11 @@ public extension UIViewController {
         button.contentHorizontalAlignment = left ? .left : .right
         button.handler = handler
         if case .title(_, _, _) = options[0] {
-            button.titleLabel?.font = UIFont.systemFont(ofSize: 15)
-            button.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: 80, height: 44))
+            button.titleLabel?.font = UIFont.systemFont(ofSize: 17)
+            button.frame = CGRect(origin: CGPoint.zero, size: size)
             button.contentEdgeInsets = UIEdgeInsets(top: 0, left: left ? 0 : -4, bottom: 0, right: left ? 0 : -4)
         } else {
-            button.frame = CGRect(x: 0, y: 0, width: 44, height: 44)
+            button.frame = CGRect(origin: CGPoint.zero, size: size)
             button.contentEdgeInsets = UIEdgeInsets(top: 0, left: left ? -1 : 0, bottom: 0, right: left ? 0 : -1)
             button.imageEdgeInsets = UIEdgeInsets(top: 6, left: 6, bottom: 6, right: 6)
         }
@@ -131,7 +133,7 @@ public extension UIViewController {
     }
     
     // UIBarButtonItem 自定义
-    fileprivate enum UIControlStateOption {
+    public enum UIControlStateOption {
         case title(String?, UIColor?, UIControl.State)
         case image(UIImage?, UIControl.State)
     }
