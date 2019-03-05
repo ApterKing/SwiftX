@@ -6,8 +6,6 @@
 //  Copyright © 2019 wangcong. All rights reserved.
 //
 
-import UIKit
-
 final public class XQQ: NSObject {
     
     public static let `default` = XQQ()

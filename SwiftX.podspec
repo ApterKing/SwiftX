@@ -147,12 +147,12 @@ Pod::Spec.new do |s|
     
     ss.dependency 'SwiftX/Core'
     
-    # Alipay: 2.0
+    # Alipay: 15.6.0
     ss.subspec 'Alipay' do |sss|
-      sss.source_files = 'SwiftX/Classes/OpenSDK/Alipay/*.{swift}'
+      sss.source_files = 'SwiftX/Classes/OpenSDK/Alipay/*.{swift}', 'SwiftX/Classes/OpenSDK/Alipay/*.framework/Headers/**/*.h'
+      sss.public_header_files = 'SwiftX/Classes/OpenSDK/Alipay/*.framework/Headers/**/*.h'
       sss.resources = 'SwiftX/Classes/OpenSDK/Alipay/*.bundle'
       sss.vendored_frameworks = 'SwiftX/Classes/OpenSDK/Alipay/*.framework'
-      sss.vendored_libraries = 'SwiftX/Classes/OpenSDK/Alipay/*.a'
     end
 
     # WeChat: 1.8.4 (含支付功能）
