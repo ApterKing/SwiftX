@@ -38,15 +38,15 @@ public extension UIDevice {
         return isIphone && max(UIScreen.width, UIScreen.height) <= 736.0
     }
 
-    public class func isIpone4_5() -> Bool {
+    public class func isIphone4_5() -> Bool {
         return UIScreen.width == 320 ? true : false
     }
     
-    public class func isIpone6_7() -> Bool {
+    public class func isIphone6_7() -> Bool {
         return UIScreen.width == 375 ? true : false
     }
     
-    public class func isIpone6_7_Plus() -> Bool {
+    public class func isIphone6_7_Plus() -> Bool {
         return UIScreen.width == 414 ? true : false
     }
     

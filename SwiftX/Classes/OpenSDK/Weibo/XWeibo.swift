@@ -15,6 +15,7 @@ final public class XWeibo: NSObject {
     
     // 在调用前必须注册
     public func register(appKey: String) {
+        WeiboSDK.enableDebugMode(true)
         WeiboSDK.registerApp(appKey)
     }
     
@@ -27,7 +28,7 @@ final public class XWeibo: NSObject {
     }
     
     /// MARK: 登录
-    public typealias AuthHandler = ((Error?, AuthEntity?) -> Void)
+    public typealias AuthHandler = ((_ error: Error?, _ entity: AuthEntity?, _ jsonResponse: [AnyHashable: Any]) -> Void)
     private var authHandler: AuthHandler?
 
     /// MARK: 分享
@@ -36,6 +37,14 @@ final public class XWeibo: NSObject {
 }
 
 public extension XWeibo {
+    
+    public func auth(with handler: AuthHandler? = nil) {
+        let authRequest = WBAuthorizeRequest.request() as! WBAuthorizeRequest
+        authRequest.scope = "all"
+//        authRequest.redirectURI = MLConfiguration.ThirdPlatform.Sina.redirectURL
+        authRequest.shouldShowWebViewForAuthIfCannotSSO = true
+        WeiboSDK.send(authRequest)
+    }
     
     final public class AuthEntity: NSObject, Codable {
         var openId: String?
