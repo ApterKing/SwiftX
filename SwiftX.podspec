@@ -165,6 +165,9 @@ Pod::Spec.new do |s|
       sss.dependency 'SwiftX/JSON'
       sss.frameworks = 'SystemConfiguration', 'Security', 'CoreTelephony', 'CFNetwork', 'CoreGraphics'
       sss.libraries = 'sqlite3', 'z', 'c++'
+      sss.pod_target_xcconfig = {
+        'OTHER_LDFLAGS' => '-Objc -all_load',
+      }
     end
 
     # QQ: 3.3.3.0
@@ -179,6 +182,11 @@ Pod::Spec.new do |s|
       sss.source_files = 'SwiftX/Classes/OpenSDK/Weibo/*.{swift,h,m}'
       sss.resources = 'SwiftX/Classes/OpenSDK/Weibo/*.bundle'
       sss.vendored_libraries = 'SwiftX/Classes/OpenSDK/Weibo/*.a'
+      sss.frameworks = 'QuartzCore', 'ImageIO', 'SystemConfiguration', 'Security', 'CoreTelephony', 'CoreText', 'CoreGraphics', 'UIKit', 'Foundation', 'CFNetwork', 'Security'
+      sss.libraries = 'sqlite3', 'z'
+      sss.pod_target_xcconfig = {
+        'OTHER_LDFLAGS' => '-Objc -all_load',
+      }
     end
 
   end
