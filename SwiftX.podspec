@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'SwiftX'
-  s.version          = '0.1.1'
+  s.version          = '0.1.2'
   s.summary          = 'Swift 相关扩展.'
 
   s.description      = <<-DESC
@@ -187,6 +187,35 @@ Pod::Spec.new do |s|
       sss.pod_target_xcconfig = {
         'OTHER_LDFLAGS' => '-Objc -all_load',
       }
+    end
+    
+    # Baidu
+    ss.subspec 'Baidu' do |sss|
+      
+      # 百度定位SDK  1.4
+      sss.subspec 'Location' do |ssss|
+        ssss.source_files = 'SwiftX/Classes/OpenSDK/Baidu/Location/*.{swift,h,m}'
+        ssss.public_header_files = 'SwiftX/Classes/OpenSDK/Baidu/Location/*.framework/Headers/**/*.h'
+        ssss.vendored_frameworks = 'SwiftX/Classes/OpenSDK/Baidu/Location/*.framework'
+        ssss.frameworks = 'CoreLocation', 'SystemConfiguration', 'Security', 'Security', 'CoreTelephony', 'AdSupport'
+        ssss.pod_target_xcconfig = {
+          'OTHER_LDFLAGS' => '-Objc',
+        }
+      end
+      
+      # 百度地图  4.3.0
+      sss.subspec 'Map' do |ssss|
+        ssss.source_files = 'SwiftX/Classes/OpenSDK/Baidu/Map/*.{swift,h,m}'
+        ssss.public_header_files = 'SwiftX/Classes/OpenSDK/Baidu/Map/*.framework/Headers/**/*.h'
+        ssss.resources = 'SwiftX/Classes/OpenSDK/Baidu/Map/*.bundle'
+        ssss.vendored_frameworks = 'SwiftX/Classes/OpenSDK/Baidu/Map/*.framework'
+        ssss.vendored_libraries = 'SwiftX/Classes/OpenSDK/Baidu/Map/thirdlibs/*.a'
+        ssss.frameworks = 'CoreGraphics', 'CoreLocation', 'OpenGLES', 'QuartzCore', 'Security', 'SystemConfiguration'
+        ssss.pod_target_xcconfig = {
+          'OTHER_LDFLAGS' => '-Objc',
+        }
+      end
+      
     end
 
   end

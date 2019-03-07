@@ -23,6 +23,7 @@ public extension Toast {
         toast.view.backgroundColor = UIColor(hexColor: "#000000").withAlphaComponent(0.5)
         toast.view.textInsets = UIEdgeInsets(top: 10, left: 24, bottom: 10, right: 24)
         toast.view.font = UIFont.systemFont(ofSize: 13)
+        toast.view.bottomOffsetPortrait = UIDevice.isIphoneX_xx() ? UIScreen.homeIndicatorMoreHeight + 50 : 50
         toast.show()
         
         if let current = ToastCenter.default.currentToast {
@@ -52,8 +53,7 @@ public extension Toast {
     }
 }
 
-class UIKeyboardVisibleManager
-{
+class UIKeyboardVisibleManager {
     static let share : UIKeyboardVisibleManager = UIKeyboardVisibleManager()
     fileprivate(set) var isVisible  = false
     init(){
