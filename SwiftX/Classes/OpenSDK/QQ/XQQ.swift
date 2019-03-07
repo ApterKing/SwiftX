@@ -10,6 +10,15 @@ final public class XQQ: NSObject {
     
     public static let `default` = XQQ()
     private override init() {}
+    
+    /** MARK: 登录回调
+     *  @param  error: 错误
+     *  @param  entity: 解析后的数据
+     *  @param  jsonResponse: 未解析的数据
+     */
+    public typealias AuthHandler = ((_ error: Error?, _ entity: AuthEntity?, _ jsonResponse: [AnyHashable: Any]?) -> Void)
+    private var authHandler: AuthHandler?
+    
     private var _auth: TencentOAuth?
     
     // 在调用前必须注册
@@ -37,17 +46,9 @@ final public class XQQ: NSObject {
         return UIApplication.shared.canOpenURL(URL(string: "mqqopensdkapiV3://")!)
     }
     
-    /** MARK: 登录回调
-     *  @param  error: 错误
-     *  @param  entity: 解析后的数据
-     *  @param  jsonResponse: 未解析的数据
-     */
-    public typealias AuthHandler = ((_ error: Error?, _ entity: AuthEntity?, _ jsonResponse: [AnyHashable: Any]?) -> Void)
-    private var authHandler: AuthHandler?
-
 }
 
-// 登录
+/// MARK: 认证
 public extension XQQ {
     
     public func auth(with handler: AuthHandler? = nil) {

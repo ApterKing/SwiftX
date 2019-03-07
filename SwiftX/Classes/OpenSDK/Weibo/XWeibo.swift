@@ -13,6 +13,18 @@ final public class XWeibo: NSObject {
     public static let `default` = XWeibo()
     private override init() {}
     
+    /** MARK: 登录回调
+     *  @param  error: 错误
+     *  @param  entity: 解析后的数据
+     *  @param  jsonResponse: 未解析的数据
+     */
+    public typealias AuthHandler = ((_ error: Error?, _ entity: AuthEntity?, _ jsonResponse: [AnyHashable: Any]?) -> Void)
+    private var authHandler: AuthHandler?
+    
+    /// MARK: 分享
+    public typealias ShareHandler = ((Error?) -> Void)
+    private var shareHandler: ShareHandler?
+    
     // 在调用前必须注册
     public func register(appKey: String) {
         WeiboSDK.enableDebugMode(false)
@@ -27,15 +39,9 @@ final public class XWeibo: NSObject {
         return WeiboSDK.handleOpen(url, delegate: self)
     }
     
-    /// MARK: 登录
-    public typealias AuthHandler = ((_ error: Error?, _ entity: AuthEntity?, _ jsonResponse: [AnyHashable: Any]?) -> Void)
-    private var authHandler: AuthHandler?
-
-    /// MARK: 分享
-    public typealias ShareHandler = ((Error?) -> Void)
-    private var shareHandler: ShareHandler?
 }
 
+/// MARK: 认证
 public extension XWeibo {
     
     public func auth(with handler: AuthHandler? = nil) {

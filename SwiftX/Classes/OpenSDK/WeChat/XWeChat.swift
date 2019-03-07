@@ -11,21 +11,6 @@ final public class XWeChat: NSObject {
     public static let `default` = XWeChat()
     private override init() {}
     
-    // 在调用前必须注册
-    public func register(appKey: String, appSecret: String) {
-        WXApi.registerApp(appKey)
-        UserDefaults.standard.set(appKey, forKey: "com.SwiftX.OpenSDK.WeChat.appKey")
-        UserDefaults.standard.set(appSecret, forKey: "com.SwiftX.OpenSDK.WeChat.appSecret")
-    }
-
-    public func isInstalled() -> Bool {
-        return WXApi.isWXAppInstalled() && WXApi.isWXAppSupport()
-    }
-    
-    public func handleOpen(url: URL) -> Bool {
-        return WXApi.handleOpen(url, delegate: self)
-    }
-    
     /** MARK: 登录回调
      *  @param  error: 错误
      *  @param  entity: 解析后的数据
@@ -42,9 +27,25 @@ final public class XWeChat: NSObject {
     // MARK: 分享
     public typealias ShareHandler = ((Error?) -> Void)
     private var shareHandler: ShareHandler?
+    
+    // 在调用前必须注册
+    public func register(appKey: String, appSecret: String) {
+        WXApi.registerApp(appKey)
+        UserDefaults.standard.set(appKey, forKey: "com.SwiftX.OpenSDK.WeChat.appKey")
+        UserDefaults.standard.set(appSecret, forKey: "com.SwiftX.OpenSDK.WeChat.appSecret")
+    }
+
+    public func isInstalled() -> Bool {
+        return WXApi.isWXAppInstalled() && WXApi.isWXAppSupport()
+    }
+    
+    public func handleOpen(url: URL) -> Bool {
+        return WXApi.handleOpen(url, delegate: self)
+    }
+    
 }
 
-// 登录
+/// MARK: 认证
 public extension XWeChat  {
     
     /// 授权第一步
@@ -176,7 +177,7 @@ public extension XWeChat  {
     
 }
 
-// 支付
+/// MARK: 支付
 extension XWeChat {
     
     public func pay(with params: [AnyHashable: Any], payHandler: PayHandler? = nil) {

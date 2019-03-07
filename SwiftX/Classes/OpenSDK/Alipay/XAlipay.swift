@@ -10,6 +10,10 @@ final public class XAlipay: NSObject {
     public static let `default` = XAlipay()
     private override init() {}
     
+    /// MARK: 支付
+    public typealias PayHandler = ((Error?) -> Void)
+    private var payHandler: PayHandler?
+    
     public func handleOpen(url: URL) -> Bool {
         if url.host == "safepay" {
             AlipaySDK.defaultService()?.processOrder(withPaymentResult: url, standbyCallback: { (result) in
@@ -19,14 +23,10 @@ final public class XAlipay: NSObject {
         }
         return false
     }
-    
-    /// MARK: 支付
-    public typealias PayHandler = ((Error?) -> Void)
-    private var payHandler: PayHandler?
-    
+
 }
 
-// 支付
+/// MARK: 支付
 extension XAlipay {
     
     public func pay(with orderString: String, scheme: String, payHandler: PayHandler? = nil) {
