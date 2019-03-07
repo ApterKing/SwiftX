@@ -7,6 +7,6 @@
 
 import UIKit
 
-class XLocationManager: NSObject {
+final public class XLocationManager: NSObject {
 
 }

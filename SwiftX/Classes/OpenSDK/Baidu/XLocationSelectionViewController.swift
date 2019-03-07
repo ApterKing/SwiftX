@@ -7,9 +7,9 @@
 
 import UIKit
 
-class XLocationSelectionViewController: UIViewController {
+final public class XLocationSelectionViewController: XBaseViewController {
 
-    override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.

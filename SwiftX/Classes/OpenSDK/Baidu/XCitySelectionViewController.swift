@@ -7,9 +7,9 @@
 
 import UIKit
 
-class XCitySelectionViewController: UIViewController {
+final public class XCitySelectionViewController: UIViewController {
 
-    override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.

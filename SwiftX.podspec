@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'SwiftX'
-  s.version          = '0.1.2'
+  s.version          = '0.1.3'
   s.summary          = 'Swift 相关扩展.'
 
   s.description      = <<-DESC
@@ -189,12 +189,25 @@ Pod::Spec.new do |s|
       }
     end
     
+    # Weibo: 3.1.2
+    ss.subspec 'JPush' do |sss|
+        sss.source_files = 'SwiftX/Classes/OpenSDK/JPush/*.{swift,h,m}'
+        sss.vendored_libraries = 'SwiftX/Classes/OpenSDK/JPush/*.a'
+        sss.frameworks = 'CFNetwork', 'CoreFoundation', 'CoreTelephony', 'SystemConfiguration', 'CoreGraphics', 'Foundation', 'CoreGraphics', 'UIKit', 'Foundation', 'CFNetwork', 'Security', 'AdSupport', 'UserNotifications'
+        sss.libraries = 'z', 'resolv'
+        sss.pod_target_xcconfig = {
+            'OTHER_LDFLAGS' => '-Objc -all_load',
+        }
+    end
+    
     # Baidu
     ss.subspec 'Baidu' do |sss|
+        
+      sss.source_files = 'SwiftX/Classes/OpenSDK/Baidu/*.{swift,h,m}'
       
       # 百度定位SDK  1.4
       sss.subspec 'Location' do |ssss|
-        ssss.source_files = 'SwiftX/Classes/OpenSDK/Baidu/Location/*.{swift,h,m}'
+        ssss.source_files = 'SwiftX/Classes/OpenSDK/Baidu/Location/*.{swift,h,m}', 'SwiftX/Classes/OpenSDK/Baidu/Location/*.framework/Headers/**/*.h'
         ssss.public_header_files = 'SwiftX/Classes/OpenSDK/Baidu/Location/*.framework/Headers/**/*.h'
         ssss.vendored_frameworks = 'SwiftX/Classes/OpenSDK/Baidu/Location/*.framework'
         ssss.frameworks = 'CoreLocation', 'SystemConfiguration', 'Security', 'Security', 'CoreTelephony', 'AdSupport'
@@ -205,7 +218,7 @@ Pod::Spec.new do |s|
       
       # 百度地图  4.3.0
       sss.subspec 'Map' do |ssss|
-        ssss.source_files = 'SwiftX/Classes/OpenSDK/Baidu/Map/*.{swift,h,m}'
+        ssss.source_files = 'SwiftX/Classes/OpenSDK/Baidu/Map/*.{swift,h,m}', 'SwiftX/Classes/OpenSDK/Baidu/Map/*.framework/Headers/**/*.h'
         ssss.public_header_files = 'SwiftX/Classes/OpenSDK/Baidu/Map/*.framework/Headers/**/*.h'
         ssss.resources = 'SwiftX/Classes/OpenSDK/Baidu/Map/*.bundle'
         ssss.vendored_frameworks = 'SwiftX/Classes/OpenSDK/Baidu/Map/*.framework'
@@ -215,6 +228,10 @@ Pod::Spec.new do |s|
           'OTHER_LDFLAGS' => '-Objc',
         }
       end
+      
+      sss.dependency 'SwiftX/Extensions'
+      sss.dependency 'SwiftX/View'
+      sss.dependency 'SwiftX/Globals'
       
     end
 
