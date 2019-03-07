@@ -125,7 +125,7 @@ public class XHttp {
                     return nil
                 }
             case .query:
-                if let params = params as? [String: Any] {
+                if let params = params as? [AnyHashable: Any] {
                     var paramString = params.reduce("", { (result, arg1) -> String in
                         let (key, value) = arg1
                         return "\(result)\(result == "" ? "" : "&")\(key)=\(String(describing: value))"

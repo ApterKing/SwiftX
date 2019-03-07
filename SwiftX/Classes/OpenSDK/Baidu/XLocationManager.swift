@@ -10,7 +10,7 @@ import UIKit
 final public class XLocationManager: NSObject {
     
     public static let `default` = XLocationManager()
-    private init() {}
+    private override init() {}
     
     
 
