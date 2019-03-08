@@ -121,7 +121,9 @@ public class XHttp {
                     }
                 } catch {
                     // 传递参数错误
-                    handler?(.failure(XHttp.HttpError.requestSerializerError))
+                    _processOnMain {
+                        handler?(.failure(XHttp.HttpError.requestSerializerError))
+                    }
                     return nil
                 }
             case .query:
@@ -157,7 +159,9 @@ public class XHttp {
             #endif
             
             if error != nil {
-                handler?(.failure(error!))
+                _processOnMain {
+                    handler?(.failure(error!))
+                }
             } else {
                 let responseSerializer = configuration.responseSerializer
                 switch responseSerializer {
@@ -165,22 +169,36 @@ public class XHttp {
                     do {
                         if let data = data {
                             let jsonObject = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
-                            handler?(.success(jsonObject))
+                            _processOnMain {
+                                handler?(.success(jsonObject))
+                            }
                         } else {
                             // 服务器返回参数错误
-                            handler?(.failure(XHttp.HttpError.serverSystemError))
+                            _processOnMain {
+                                handler?(.failure(XHttp.HttpError.serverSystemError))
+                            }
                         }
                     } catch {
                         // 解析数据错误
-                        handler?(.failure(XHttp.HttpError.responseSerializerError))
+                        _processOnMain {
+                            handler?(.failure(XHttp.HttpError.responseSerializerError))
+                        }
                     }
                 default:
-                    handler?(.success(data))
+                    _processOnMain {
+                        handler?(.success(data))
+                    }
                 }
             }
         }
         task.resume()
         return task
+    }
+    
+    static private func _processOnMain(_ block: @escaping (() -> Void)) {
+        DispatchQueue.main.async {
+            block()
+        }
     }
     
 }

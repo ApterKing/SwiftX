@@ -193,11 +193,11 @@ Pod::Spec.new do |s|
     ss.subspec 'JPush' do |sss|
         sss.source_files = 'SwiftX/Classes/OpenSDK/JPush/*.{swift,h,m}'
         sss.vendored_libraries = 'SwiftX/Classes/OpenSDK/JPush/*.a'
-        sss.frameworks = 'CFNetwork', 'CoreFoundation', 'CoreTelephony', 'SystemConfiguration', 'CoreGraphics', 'Foundation', 'CoreGraphics', 'UIKit', 'Foundation', 'CFNetwork', 'Security', 'AdSupport', 'UserNotifications'
+        sss.frameworks = 'CFNetwork', 'CoreFoundation', 'CoreTelephony', 'SystemConfiguration', 'CoreGraphics', 'Foundation', 'CoreGraphics', 'UIKit', 'Foundation', 'CFNetwork', 'Security', 'UserNotifications'
         sss.libraries = 'z', 'resolv'
-        sss.pod_target_xcconfig = {
-            'OTHER_LDFLAGS' => '-Objc -all_load',
-        }
+#        sss.pod_target_xcconfig = {
+#            'OTHER_LDFLAGS' => '-Objc -all_load',
+#        }
     end
     
     # Baidu
@@ -227,6 +227,7 @@ Pod::Spec.new do |s|
         ssss.pod_target_xcconfig = {
           'OTHER_LDFLAGS' => '-Objc',
         }
+        
       end
       
       sss.dependency 'SwiftX/Extensions'
@@ -236,5 +237,84 @@ Pod::Spec.new do |s|
     end
 
   end
+  
+  s.prepare_command = <<-EOF
+  # 创建BMKLocationKit
+  rm -rf SwiftX/Classes/OpenSDK/Baidu/Location/BMKLocationKit.framework/Modules
+  mkdir SwiftX/Classes/OpenSDK/Baidu/Location/BMKLocationKit.framework/Modules
+  touch SwiftX/Classes/OpenSDK/Baidu/Location/BMKLocationKit.framework/Modules/module.modulemap
+  cat <<-EOF > SwiftX/Classes/OpenSDK/Baidu/Location/BMKLocationKit.framework/Modules/module.modulemap
+  framework module BMKLocationKit {
+      umbrella header "BMKLocationComponent.h"
+      export *
+      link "sqlite3.0"
+      link "stdc++.6.0.9"
+  }
+  \EOF
+  # 创建BaiduMapAPI_Base
+  rm -rf SwiftX/Classes/OpenSDK/Baidu/Map/BaiduMapAPI_Base.framework/Modules
+  mkdir SwiftX/Classes/OpenSDK/Baidu/Map/BaiduMapAPI_Base.framework/Modules
+  touch SwiftX/Classes/OpenSDK/Baidu/Map/BaiduMapAPI_Base.framework/Modules/module.modulemap
+  cat <<-EOF > SwiftX/Classes/OpenSDK/Baidu/Map/BaiduMapAPI_Base.framework/Modules/module.modulemap
+  framework module BaiduMapAPI_Base {
+      umbrella header "BMKBaseComponent.h"
+      export *
+      link "sqlite3.0"
+      link "stdc++.6.0.9"
+  }
+  \EOF
+  
+  # 创建BaiduMapAPI_Map
+  rm -rf SwiftX/Classes/OpenSDK/Baidu/Map/BaiduMapAPI_Map.framework/Modules
+  mkdir SwiftX/Classes/OpenSDK/Baidu/Map/BaiduMapAPI_Map.framework/Modules
+  touch SwiftX/Classes/OpenSDK/Baidu/Map/BaiduMapAPI_Map.framework/Modules/module.modulemap
+  cat <<-EOF > SwiftX/Classes/OpenSDK/Baidu/Map/BaiduMapAPI_Map.framework/Modules/module.modulemap
+  framework module BaiduMapAPI_Map {
+      umbrella header "BMKMapComponent.h"
+      export *
+      link "sqlite3.0"
+      link "stdc++.6.0.9"
+  }
+  \EOF
+
+  # 创建BaiduMapAPI_Cloud
+  rm -rf SwiftX/Classes/OpenSDK/Baidu/Map/BaiduMapAPI_Cloud.framework/Modules
+  mkdir SwiftX/Classes/OpenSDK/Baidu/Map/BaiduMapAPI_Cloud.framework/Modules
+  touch SwiftX/Classes/OpenSDK/Baidu/Map/BaiduMapAPI_Cloud.framework/Modules/module.modulemap
+  cat <<-EOF > SwiftX/Classes/OpenSDK/Baidu/Map/BaiduMapAPI_Cloud.framework/Modules/module.modulemap
+  framework module BaiduMapAPI_Cloud {
+      umbrella header "BMKCloudSearchComponent.h"
+      export *
+      link "sqlite3.0"
+      link "stdc++.6.0.9"
+  }
+  \EOF
+
+  # 创建BaiduMapAPI_Search
+  rm -rf SwiftX/Classes/OpenSDK/Baidu/Map/BaiduMapAPI_Search.framework/Modules
+  mkdir SwiftX/Classes/OpenSDK/Baidu/Map/BaiduMapAPI_Search.framework/Modules
+  touch SwiftX/Classes/OpenSDK/Baidu/Map/BaiduMapAPI_Search.framework/Modules/module.modulemap
+  cat <<-EOF > SwiftX/Classes/OpenSDK/Baidu/Map/BaiduMapAPI_Search.framework/Modules/module.modulemap
+  framework module BaiduMapAPI_Search {
+      umbrella header "BMKSearchComponent.h"
+      export *
+      link "sqlite3.0"
+      link "stdc++.6.0.9"
+  }
+  \EOF
+  
+  # 创建BaiduMapAPI_Search
+  rm -rf SwiftX/Classes/OpenSDK/Baidu/Map/BaiduMapAPI_Utils.framework/Modules
+  mkdir SwiftX/Classes/OpenSDK/Baidu/Map/BaiduMapAPI_Utils.framework/Modules
+  touch SwiftX/Classes/OpenSDK/Baidu/Map/BaiduMapAPI_Utils.framework/Modules/module.modulemap
+  cat <<-EOF > SwiftX/Classes/OpenSDK/Baidu/Map/BaiduMapAPI_Utils.framework/Modules/module.modulemap
+  framework module BaiduMapAPI_Utils {
+      umbrella header "BMKUtilsComponent.h"
+      export *
+      link "sqlite3.0"
+      link "stdc++.6.0.9"
+  }
+  \EOF
+  EOF
 
 end

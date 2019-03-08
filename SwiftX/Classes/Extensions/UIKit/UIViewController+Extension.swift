@@ -161,6 +161,49 @@ public extension UIViewController {
     static internal var kBackItemTag = Int.max / 3 + 1
 }
 
+/// MARK: HUD loading
+public extension UIViewController {
+    
+    static private let kHUDTag = 2019
+    
+    // 默认全屏居中
+    public func startHUDAnimation(deltaY: CGFloat = 0, superView: UIView? = nil) {
+        var tagView = superView?.viewWithTag(UIViewController.kHUDTag)
+        if tagView == nil {
+            tagView = view.viewWithTag(UIViewController.kHUDTag)
+        }
+        
+        guard tagView == nil else { return }
+        
+        let hudView = XHUDLoadingView(frame: superView?.bounds ?? view.bounds)
+        hudView.y = hudView.y ?? 0 + deltaY
+        hudView.tag = UIViewController.kHUDTag
+        hudView.startAnimation()
+
+        if superView != nil {
+            superView?.addSubview(hudView)
+        } else {
+            view.addSubview(hudView)
+        }
+    }
+    
+    // 关闭
+    public func stopHUDAnimation(superView: UIView? = nil) {
+        var hudView = superView?.viewWithTag(UIViewController.kHUDTag)
+        if hudView != nil {
+            hudView?.removeFromSuperview()
+        } else {
+            hudView = view.viewWithTag(UIViewController.kHUDTag)
+            hudView?.removeFromSuperview()
+        }
+        
+        if let hudView = hudView as? XHUDLoadingView {
+            hudView.stopAnimation()
+        }
+    }
+
+}
+
 /// MARK: 点击空白处键盘处理
 public extension UIViewController {
     static private var kKeyboardGesture = "kKeyboardGesture"

@@ -5,6 +5,9 @@
 //  Created by wangcong on 2019/3/7.
 //
 
+import UserNotifications
+
+/// MARK: 极光推送封装，注意：3.0.0以上不再支持i386模拟器，需要将Build Active Architecture Only 设置为YES
 final public class XJPush: NSObject {
     
     public static let `default` = XJPush()
@@ -23,7 +26,7 @@ final public class XJPush: NSObject {
             entity.types = Int(JPAuthorizationOptions(rawValue: JPAuthorizationOptions.alert.rawValue | JPAuthorizationOptions.badge.rawValue | JPAuthorizationOptions.sound.rawValue).rawValue)
         }
         JPUSHService.register(forRemoteNotificationConfig: entity, delegate: nil)
-       
+
         var isProduction = false
         #if !DEBUG
         isProduction = true
@@ -43,7 +46,7 @@ final public class XJPush: NSObject {
         }
     }
     
-    public func regiterDeviceToken(_ deviceToken: Data) {
+    public func regiter(deviceToken: Data) {
         JPUSHService.registerDeviceToken(deviceToken)
     }
     
@@ -63,6 +66,48 @@ final public class XJPush: NSObject {
             return true
         }
         return false
+    }
+   
+    
+
+}
+
+extension XJPush: JPUSHRegisterDelegate {
+
+    @available(iOS 10.0, *)
+    public func jpushNotificationCenter(_ center: UNUserNotificationCenter!, willPresent notification: UNNotification!, withCompletionHandler completionHandler: ((Int) -> Void)!) {
+        let userInfo = notification.request.content.userInfo
+        if notification.request.trigger is UNPushNotificationTrigger {
+            JPUSHService.handleRemoteNotification(userInfo)
+        } else {
+            //本地通知
+        }
+        //需要执行这个方法，选择是否提醒用户，有Badge、Sound、Alert三种类型可以选择设置
+        completionHandler(Int(UNNotificationPresentationOptions.alert.rawValue))
+    }
+    
+    @available(iOS 10.0, *)
+    public func jpushNotificationCenter(_ center: UNUserNotificationCenter!, didReceive response: UNNotificationResponse!, withCompletionHandler completionHandler: (() -> Void)!) {
+        let userInfo = response.notification.request.content.userInfo
+        if response.notification.request.trigger is UNPushNotificationTrigger {
+            JPUSHService.handleRemoteNotification(userInfo)
+        } else {
+            //本地通知
+        }
+        //处理通知 跳到指定界面等等
+//        receivePush(userInfo as! Dictionary<String, Any>)
+        completionHandler()
+    }
+    
+    @available(iOS 12.0, *)
+    public func jpushNotificationCenter(_ center: UNUserNotificationCenter!, openSettingsFor notification: UNNotification?) {
+        
+    }
+    
+    // iOS 9.0
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        JPUSHService.handleRemoteNotification(userInfo);
+        completionHandler(UIBackgroundFetchResult.newData);
     }
     
 }
