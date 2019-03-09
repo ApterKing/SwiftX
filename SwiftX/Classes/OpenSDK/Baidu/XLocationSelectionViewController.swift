@@ -38,7 +38,7 @@ final public class XLocationSelectionViewController: XBaseViewController {
         return mapView
     }()
     
-    private lazy var locationManager: BMKLocationManager {
+    private lazy var locationManager: BMKLocationManager = {
         let manager = BMKLocationManager()
         manager.delegate = self
         return manager
