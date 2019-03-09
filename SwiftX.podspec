@@ -202,9 +202,7 @@ Pod::Spec.new do |s|
     
     # Baidu
     ss.subspec 'Baidu' do |sss|
-        
-      sss.source_files = 'SwiftX/Classes/OpenSDK/Baidu/*.{swift,h,m}'
-      
+
       # 百度定位SDK  1.4
       sss.subspec 'Location' do |ssss|
         ssss.source_files = 'SwiftX/Classes/OpenSDK/Baidu/Location/*.{swift,h,m}', 'SwiftX/Classes/OpenSDK/Baidu/Location/*.framework/Headers/**/*.h'
@@ -220,7 +218,7 @@ Pod::Spec.new do |s|
       sss.subspec 'Map' do |ssss|
         ssss.source_files = 'SwiftX/Classes/OpenSDK/Baidu/Map/*.{swift,h,m}', 'SwiftX/Classes/OpenSDK/Baidu/Map/*.framework/Headers/**/*.h'
         ssss.public_header_files = 'SwiftX/Classes/OpenSDK/Baidu/Map/*.framework/Headers/**/*.h'
-        ssss.resources = 'SwiftX/Classes/OpenSDK/Baidu/Map/*.bundle'
+        ssss.resources = 'SwiftX/Classes/OpenSDK/Baidu/Map/BaiduMapAPI_Map.framework/mapapi.bundle', 'SwiftX/Classes/OpenSDK/Baidu/Map/Assets/*.png'
         ssss.vendored_frameworks = 'SwiftX/Classes/OpenSDK/Baidu/Map/*.framework'
         ssss.vendored_libraries = 'SwiftX/Classes/OpenSDK/Baidu/Map/thirdlibs/*.a'
         ssss.frameworks = 'CoreGraphics', 'CoreLocation', 'OpenGLES', 'QuartzCore', 'Security', 'SystemConfiguration'
@@ -277,19 +275,6 @@ Pod::Spec.new do |s|
   }
   \EOF
 
-  # 创建BaiduMapAPI_Cloud
-  rm -rf SwiftX/Classes/OpenSDK/Baidu/Map/BaiduMapAPI_Cloud.framework/Modules
-  mkdir SwiftX/Classes/OpenSDK/Baidu/Map/BaiduMapAPI_Cloud.framework/Modules
-  touch SwiftX/Classes/OpenSDK/Baidu/Map/BaiduMapAPI_Cloud.framework/Modules/module.modulemap
-  cat <<-EOF > SwiftX/Classes/OpenSDK/Baidu/Map/BaiduMapAPI_Cloud.framework/Modules/module.modulemap
-  framework module BaiduMapAPI_Cloud {
-      umbrella header "BMKCloudSearchComponent.h"
-      export *
-      link "sqlite3.0"
-      link "stdc++.6.0.9"
-  }
-  \EOF
-
   # 创建BaiduMapAPI_Search
   rm -rf SwiftX/Classes/OpenSDK/Baidu/Map/BaiduMapAPI_Search.framework/Modules
   mkdir SwiftX/Classes/OpenSDK/Baidu/Map/BaiduMapAPI_Search.framework/Modules
@@ -303,7 +288,7 @@ Pod::Spec.new do |s|
   }
   \EOF
   
-  # 创建BaiduMapAPI_Search
+  # 创建BaiduMapAPI_Utils
   rm -rf SwiftX/Classes/OpenSDK/Baidu/Map/BaiduMapAPI_Utils.framework/Modules
   mkdir SwiftX/Classes/OpenSDK/Baidu/Map/BaiduMapAPI_Utils.framework/Modules
   touch SwiftX/Classes/OpenSDK/Baidu/Map/BaiduMapAPI_Utils.framework/Modules/module.modulemap

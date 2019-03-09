@@ -64,18 +64,24 @@ public extension XCache {
         
         // 删除
         public func removeObject(forKey key: String) throws {
-            try memory.removeObject(forKey: key)
-            
-            if configuration.cachePolicy == .allowed {
+            do {
+                try memory.removeObject(forKey: key)
                 try disk.removeObject(forKey: key)
+            } catch {
+                if configuration.cachePolicy == .allowed {
+                    try disk.removeObject(forKey: key)
+                }
             }
         }
         
         public func removeObjectIfExpired(forKey key: String) throws {
-            try memory.removeObjectIfExpired(forKey: key)
-            
-            if configuration.cachePolicy == .allowed {
+            do {
+                try memory.removeObjectIfExpired(forKey: key)
                 try disk.removeObjectIfExpired(forKey: key)
+            } catch {
+                if configuration.cachePolicy == .allowed {
+                    try disk.removeObjectIfExpired(forKey: key)
+                }
             }
         }
         

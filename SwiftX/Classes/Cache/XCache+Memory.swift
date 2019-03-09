@@ -74,8 +74,6 @@ public extension XCache {
         
         // 删除
         public func removeObject(forKey key: String) throws {
-            let entry = try self.entry(forKey: key)
-            
             if existObject(forKey: key) {
                 cache.removeObject(forKey: NSString(string: key))
                 keys.remove(key)

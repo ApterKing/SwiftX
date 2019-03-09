@@ -47,7 +47,7 @@ final public class XHUDLoadingView: UIView {
     public override func layoutSubviews() {
         super.layoutSubviews()
         opacityView.frame = bounds
-        let hudWideHight: CGFloat = 160
+        let hudWideHight: CGFloat = 90
         hudView.frame = CGRect(x: (width - hudWideHight) / 2.0, y: (height - hudWideHight) / 2.0, width: hudWideHight, height: hudWideHight)
         indicatorView.center = CGPoint(x: hudView.width / 2.0, y: hudView.height / 2.0)
     }

@@ -126,6 +126,7 @@ public extension UIViewController {
                 button.setTitle(title, for: state)
                 button.setTitleColor(color, for: state)
             case .image(let image, let state):
+                button.imageView?.contentMode = .scaleAspectFit
                 button.setImage(image, for: state)
             }
         }
