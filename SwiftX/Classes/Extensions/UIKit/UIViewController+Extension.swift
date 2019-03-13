@@ -62,8 +62,8 @@ public extension UIViewController {
     }
     
     fileprivate func configNavigationBarTransparency(_ translucent: Bool) {
-        navigationController?.navigationBar.backgroundColor = translucent ? UIColor.clear : nil
         navigationController?.navigationBar.isTranslucent = translucent
+        navigationController?.navigationBar.backgroundColor = translucent ? UIColor.clear : UIColor.clear
     }
 }
 

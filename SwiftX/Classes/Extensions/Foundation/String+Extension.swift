@@ -144,9 +144,9 @@ public extension String {
 // MARK: size
 public extension String {
     
-    func heightWith(fontSize: CGFloat, limitWidth: CGFloat, numberOfLines: Int = 0) -> CGFloat {
+    func heightWith(font: UIFont, limitWidth: CGFloat, numberOfLines: Int = 0) -> CGFloat {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: fontSize)
+        label.font = font
         label.numberOfLines = numberOfLines
         label.text = self
         return label.sizeThatFits(CGSize(width: limitWidth, height: CGFloat.greatestFiniteMagnitude)).height
