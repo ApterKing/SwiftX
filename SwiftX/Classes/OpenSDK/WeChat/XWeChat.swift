@@ -180,17 +180,34 @@ public extension XWeChat  {
 /// MARK: 支付
 extension XWeChat {
     
+    public func pay(with paramsString: String, payHandler: PayHandler? = nil) {
+        if let params = (try? JSONSerialization.object(with: paramsString)) as? [AnyHashable: Any] {
+            pay(with: params, payHandler: payHandler)
+        }
+    }
+    
     public func pay(with params: [AnyHashable: Any], payHandler: PayHandler? = nil) {
+        guard let package = params["package"] as? String,
+            let appid = params["appid"] as? String,
+            let sign = params["sign"] as? String,
+            let partnerid = params["partnerid"] as? String,
+            let prepayid = params["prepayid"] as? String,
+            let noncestr = params["noncestr"] as? String, params["timestamp"] != nil else {
+                payHandler?(NSError(domain: "com.SwiftX.OpenSDK.WeChat", code: -1, description: "支付参数存在遗漏"))
+            return
+        }
         self.payHandler = payHandler
         let req = PayReq()
-//        let timeStampString = orderDic["timestamp"] as! NSNumber
-//        let timeStamp = timeStampString.uint32Value
-//        req.partnerId           = "1318737301";
-//        req.prepayId            = orderDic["prepayid"] as! String;
-//        req.nonceStr            = orderDic["noncestr"] as! String;
-//        req.timeStamp           = timeStamp;
-//        req.package             = "Sign=WXPay";
-//        req.sign                = orderDic["sign"] as! String;
+        var timestamp = params["timestamp"] as? UInt32
+        if let timestampString = params["timestamp"] as? String {
+            timestamp = UInt32(timestampString)
+        }
+        req.partnerId = partnerid
+        req.prepayId = prepayid
+        req.nonceStr = noncestr
+        req.timeStamp = timestamp!
+        req.package = package
+        req.sign = sign
         WXApi.send(req)
     }
     
