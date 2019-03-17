@@ -216,7 +216,7 @@ Pod::Spec.new do |s|
       
       # 百度地图  4.3.0
       sss.subspec 'Map' do |ssss|
-        ssss.source_files = 'SwiftX/Classes/OpenSDK/Baidu/Map/*.{swift,h,m}', 'SwiftX/Classes/OpenSDK/Baidu/Map/*.framework/Headers/**/*.h'
+        ssss.source_files = 'SwiftX/Classes/OpenSDK/Baidu/Map/*.{swift,h,m,mm}', 'SwiftX/Classes/OpenSDK/Baidu/Map/*.framework/Headers/**/*.h'
         ssss.public_header_files = 'SwiftX/Classes/OpenSDK/Baidu/Map/*.framework/Headers/**/*.h'
         ssss.resources = 'SwiftX/Classes/OpenSDK/Baidu/Map/BaiduMapAPI_Map.framework/mapapi.bundle', 'SwiftX/Classes/OpenSDK/Baidu/Map/Assets/*.png'
         ssss.vendored_frameworks = 'SwiftX/Classes/OpenSDK/Baidu/Map/*.framework'
