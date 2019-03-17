@@ -59,7 +59,7 @@ final public class XLocationSelectionViewController: XBaseViewController {
     }()
     
     private lazy var locationButton: UIButton = {
-        let button = UIButton(frame: CGRect(x: UIScreen.width - 40 - 15, y: UIScreen.height - UIScreen.navigationBarHeight - UIScreen.homeIndicatorMoreHeight - 40, width: 40, height: 40))
+        let button = UIButton(frame: CGRect(x: UIScreen.width - 40 - 15, y: UIScreen.height - UIScreen.navigationBarHeight - UIScreen.homeIndicatorMoreHeight - 64, width: 44, height: 44))
         button.setImage(UIImage(named: "icon_map_location", in: Bundle(for: self.classForCoder), compatibleWith: nil), for: .normal)
         button.addTarget(self, action: #selector(buttonAction(_:)), for: .touchUpInside)
         return button

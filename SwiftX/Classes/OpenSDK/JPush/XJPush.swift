@@ -18,7 +18,7 @@ final public class XJPush: NSObject {
     public var registrationID: String?   // 注册成功后此值存在，否则为nil
     
     // 在调用前必须注册
-    public func register(appKey: String, launchOptions: [AnyHashable: Any]) {
+    public func register(appKey: String, launchOptions: [AnyHashable: Any], complection:((_ registrationID: String?) -> Void)? = nil) {
         let entity = JPUSHRegisterEntity()
         if #available(iOS 12.0, *) {
             entity.types = Int(JPAuthorizationOptions(rawValue: JPAuthorizationOptions.alert.rawValue | JPAuthorizationOptions.badge.rawValue | JPAuthorizationOptions.sound.rawValue | JPAuthorizationOptions.providesAppNotificationSettings.rawValue).rawValue)
@@ -35,6 +35,7 @@ final public class XJPush: NSObject {
         JPUSHService.registrationIDCompletionHandler { [weak self] (code, registrationID) in
             if code == 0 {
                 self?.registrationID = registrationID
+                complection?(registrationID)
                 #if DEBUG
                 NSLog("com.SwiftX.OpenSDK.XJPush    registrationIDCompletionHandler   success  \(registrationID)")
                 #endif
@@ -46,7 +47,7 @@ final public class XJPush: NSObject {
         }
     }
     
-    public func regiter(deviceToken: Data) {
+    public func register(deviceToken: Data) {
         JPUSHService.registerDeviceToken(deviceToken)
     }
     
@@ -59,17 +60,67 @@ final public class XJPush: NSObject {
     }
     
     public func handleOpen(url: URL) -> Bool {
-        if url.host == "safepay" {
-            AlipaySDK.defaultService()?.processOrder(withPaymentResult: url, standbyCallback: { (result) in
-                print("XAlipay  handleOpen  ----   \(result)")
-            })
-            return true
-        }
-        return false
+        return true
     }
-   
-    
 
+}
+
+/// MARK: JPush tags
+extension XJPush {
+    
+    public func addTags(_ tags: Set<String>, _ complection: ((_ iResCode: Int, _ iTags: Set<AnyHashable>?, _ seq: Int) -> Void)?, _ seq: Int = 0) {
+        JPUSHService.addTags(tags, completion: { (iResCode: Int, iTags: Set<AnyHashable>?, seq: Int) in
+            complection?(iResCode, iTags, seq)
+        }, seq: seq)
+    }
+    
+    public func setTags(_ tags: Set<String>, _ complection: ((_ iResCode: Int, _ iTags: Set<AnyHashable>?, _ seq: Int) -> Void)?, _ seq: Int = 0) {
+        JPUSHService.setTags(tags, completion: { (iResCode: Int, iTags: Set<AnyHashable>?, seq: Int) in
+            complection?(iResCode, iTags, seq)
+        }, seq: seq)
+    }
+    
+    public func deleteTags(_ tags: Set<String>, _ complection: ((_ iResCode: Int, _ iTags: Set<AnyHashable>?, _ seq: Int) -> Void)?, _ seq: Int = 0) {
+        JPUSHService.deleteTags(tags, completion: { (iResCode: Int, iTags: Set<AnyHashable>?, seq: Int) in
+            complection?(iResCode, iTags, seq)
+        }, seq: seq)
+    }
+    
+    public func cleanTags(_ complection: ((_ iResCode: Int, _ iTags: Set<AnyHashable>?, _ seq: Int) -> Void)?, _ seq: Int = 0) {
+        JPUSHService.cleanTags({ (iResCode: Int, iTags: Set<AnyHashable>?, seq: Int) in
+            complection?(iResCode, iTags, seq)
+        }, seq: seq)
+    }
+    
+    public func getAllTags(_ complection: ((_ iResCode: Int, _ iTags: Set<AnyHashable>?, _ seq: Int) -> Void)?, _ seq: Int = 0) {
+        JPUSHService.getAllTags({ (iResCode: Int, iTags: Set<AnyHashable>?, seq: Int) in
+            complection?(iResCode, iTags, seq)
+        }, seq: seq)
+    }
+    
+}
+
+/// MARK: Alias
+extension XJPush {
+    
+    public func setAlias(_ alias: String, _ complection: ((_ iResCode: Int, _ iAlias: String?, _ seq: Int) -> Void)?, _ seq: Int = 0) {
+        JPUSHService.setAlias(alias, completion: { (iResCode, iAlias, seq) in
+            complection?(iResCode, iAlias, seq)
+        }, seq: seq)
+    }
+    
+    public func deleteAlias(_ complection: ((_ iResCode: Int, _ iAlias: String?, _ seq: Int) -> Void)?, _ seq: Int = 0) {
+        JPUSHService.deleteAlias({ (iResCode, iAlias, seq) in
+            complection?(iResCode, iAlias, seq)
+        }, seq: seq)
+    }
+    
+    public func getAlias(_ complection: ((_ iResCode: Int, _ iAlias: String?, _ seq: Int) -> Void)?, _ seq: Int = 0) {
+        JPUSHService.getAlias({ (iResCode, iAlias, seq) in
+            complection?(iResCode, iAlias, seq)
+        }, seq: seq)
+    }
+    
 }
 
 extension XJPush: JPUSHRegisterDelegate {
@@ -105,17 +156,9 @@ extension XJPush: JPUSHRegisterDelegate {
     }
     
     // iOS 9.0
-    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        JPUSHService.handleRemoteNotification(userInfo);
-        completionHandler(UIBackgroundFetchResult.newData);
-    }
+//    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+//        JPUSHService.handleRemoteNotification(userInfo);
+//        completionHandler(UIBackgroundFetchResult.newData);
+//    }
     
 }
-
-//extension XJPush: JPUSHRegisterDelegate {
-//
-//    func jpushNotificationCenter(_ center: UNUserNotificationCenter, willPresentNotification notification: UNNotification, withCompletionHandler:(void (^)(NSInteger))completionHandler {
-//
-//    }
-//
-//}

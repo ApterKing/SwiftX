@@ -19,6 +19,12 @@ public class XSearchBar: UISearchBar {
         }
     }
     
+    public var shouldFitNavigationBar: Bool = true {
+        didSet {
+            heightAnchor.constraint(equalToConstant: 44).isActive = true
+        }
+    }
+    
     public var placeholderColor: UIColor =  UIColor(hexColor: "#999999").withAlphaComponent(0.8) {
         didSet {
             searchPlaceHolderLabel?.textColor = placeholderColor
@@ -56,6 +62,8 @@ extension XSearchBar {
     
     private func _initSearchFeildIfNeeded() {
         guard searchField == nil else { return }
+        
+        shouldFitNavigationBar = true
         
         // 取消按钮
         cancelButton = value(forKey: "_cancelButton") as? UIButton

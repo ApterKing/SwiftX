@@ -110,12 +110,11 @@ public extension UIViewController {
         }
         button.contentHorizontalAlignment = left ? .left : .right
         button.handler = handler
+        button.frame = CGRect(origin: CGPoint.zero, size: size)
         if case .title(_, _, _) = options[0] {
             button.titleLabel?.font = UIFont.systemFont(ofSize: 17)
-            button.frame = CGRect(origin: CGPoint.zero, size: size)
             button.contentEdgeInsets = UIEdgeInsets(top: 0, left: left ? 0 : -4, bottom: 0, right: left ? 0 : -4)
         } else {
-            button.frame = CGRect(origin: CGPoint.zero, size: size)
             button.contentEdgeInsets = UIEdgeInsets(top: 0, left: left ? -1 : 0, bottom: 0, right: left ? 0 : -1)
             button.imageEdgeInsets = UIEdgeInsets(top: 6, left: 6, bottom: 6, right: 6)
         }
@@ -127,6 +126,7 @@ public extension UIViewController {
                 button.setTitleColor(color, for: state)
             case .image(let image, let state):
                 button.imageView?.contentMode = .scaleAspectFit
+                button.contentMode = .scaleAspectFit
                 button.setImage(image, for: state)
             }
         }

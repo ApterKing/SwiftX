@@ -139,7 +139,7 @@ extension XBaseViewController {
             imageName = "icon_nav_close_white"
         }
         var leftBarButtonItems = navigationItem.leftBarButtonItems ?? []
-        leftBarButtonItems.insert(leftBarButtonItem(image: UIImage(named: imageName, in: Bundle(for: XBaseViewController.self), compatibleWith: nil), isBackItem: true, handler: { [weak self] (_) in
+        leftBarButtonItems.insert(leftBarButtonItem(image: UIImage(named: imageName, in: Bundle(for: XBaseViewController.self), compatibleWith: nil), size: CGSize(width: 28, height: 28), isBackItem: true, handler: { [weak self] (_) in
             self?.goBack()
         }), at: 0)
         navigationItem.leftBarButtonItems = leftBarButtonItems
