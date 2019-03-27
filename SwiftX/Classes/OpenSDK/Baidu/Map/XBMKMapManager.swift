@@ -12,7 +12,7 @@ final public class XBMKMapManager: NSObject {
     private var mapManager = BMKMapManager()
     
     public func start(_ appkey: String) {
-        mapManager.start(appkey, generalDelegate: self)
+//        mapManager.start(appkey, generalDelegate: self)
     }
     
 }

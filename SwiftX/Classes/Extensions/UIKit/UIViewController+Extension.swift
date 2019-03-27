@@ -206,12 +206,12 @@ public extension UIViewController {
 }
 
 /// MARK: 点击空白处键盘处理
-public extension UIViewController {
+extension UIViewController {
     static private var kKeyboardGesture = "kKeyboardGesture"
     
     public func registerKeyboardObserver() {
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow), name: UIResponder.keyboardDidShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidHide), name: UIResponder.keyboardDidHideNotification, object: nil)
     }
     
     public func unregisterKeyboardObserver() {
@@ -224,6 +224,7 @@ public extension UIViewController {
             return gesture
         }
         let gesture = UITapGestureRecognizer(target: self, action: #selector(gestureAction(_:)))
+        gesture.delegate = self
         objc_setAssociatedObject(self, UIViewController.kKeyboardGesture, gesture, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         return gesture
     }
@@ -232,12 +233,18 @@ public extension UIViewController {
         view.endEditing(true)
     }
 
-    @objc private func keyboardWillShow() {
+    @objc private func keyboardDidShow() {
         view.addGestureRecognizer(tapGesture)
     }
 
-    @objc private func keyboardWillHide() {
+    @objc private func keyboardDidHide() {
         view.removeGestureRecognizer(tapGesture)
     }
     
+}
+
+extension UIViewController: UIGestureRecognizerDelegate {
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
 }

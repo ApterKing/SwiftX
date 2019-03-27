@@ -209,6 +209,7 @@ Pod::Spec.new do |s|
         ssss.public_header_files = 'SwiftX/Classes/OpenSDK/Baidu/Location/*.framework/Headers/**/*.h'
         ssss.vendored_frameworks = 'SwiftX/Classes/OpenSDK/Baidu/Location/*.framework'
         ssss.frameworks = 'CoreLocation', 'SystemConfiguration', 'Security', 'Security', 'CoreTelephony', 'AdSupport'
+        ssss.libraries = 'sqlite3'
         ssss.pod_target_xcconfig = {
           'OTHER_LDFLAGS' => '-Objc',
         }
@@ -222,6 +223,7 @@ Pod::Spec.new do |s|
         ssss.vendored_frameworks = 'SwiftX/Classes/OpenSDK/Baidu/Map/*.framework'
         ssss.vendored_libraries = 'SwiftX/Classes/OpenSDK/Baidu/Map/thirdlibs/*.a'
         ssss.frameworks = 'CoreGraphics', 'CoreLocation', 'OpenGLES', 'QuartzCore', 'Security', 'SystemConfiguration'
+        ssss.libraries = 'sqlite3'
         ssss.pod_target_xcconfig = {
           'OTHER_LDFLAGS' => '-Objc',
         }

@@ -9,7 +9,7 @@
 import UIKit
 
 /// MARK: 加载动画/navigationBar返回键处理
-open class XBaseViewController: UIViewController, UIGestureRecognizerDelegate {
+open class XBaseViewController: UIViewController {
     
     // navigationItem back
     public var navigationItemBackStyle = UINavigationItemBackStyle.backGray {

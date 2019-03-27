@@ -42,8 +42,9 @@ final public class XLocationSelectionViewController: XBaseViewController {
     private lazy var tableView: UITableView = {
         let tv = UITableView.default
         tv.frame = CGRect(x: searchBar.x, y: searchBar.y + searchBar.height + 10, width: UIScreen.width - 2 * searchBar.x, height: UIScreen.height - UIScreen.navigationBarHeight - (searchBar.y + searchBar.height + 10) - UIScreen.homeIndicatorMoreHeight - 30)
+        tv.backgroundColor = UIColor.white
         tv.isHidden = true
-        tv.register(LocationTableViewCell.self, forCellReuseIdentifier: "identifier")
+        tv.register(LocationTableViewCell.self, forCellReuseIdentifier: NSStringFromClass(LocationTableViewCell.self))
         tv.showsVerticalScrollIndicator = false
         tv.dataSource = self
         tv.delegate = self
@@ -75,16 +76,16 @@ final public class XLocationSelectionViewController: XBaseViewController {
         let search = BMKPoiSearch()
         return search
     }()
+    
+    // 点击确定后回调的数据
     private var selectedInfo: SelectedLocationInfo?
     
     private var poiInfos: [BMKPoiInfo] = []
     private var handler: LocationSelectedHandler?
-    private var currentLocation: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 30.58, longitude: 103.92)
+    private var currentLocation: CLLocationCoordinate2D?
 
     override public func viewDidLoad() {
         super.viewDidLoad()
-        registerKeyboardObserver()
-
         _initUI()
     }
     
@@ -124,8 +125,9 @@ extension XLocationSelectionViewController {
                                                .title("确定", UIColor(hexColor: "#66B30C").withAlphaComponent(0.7), .highlighted)
                                             ]
         navigationItem.rightBarButtonItem = customBarButtonItem(options: options, size: CGSize(width: 60, height: 44), isBackItem: false, left: false, handler: { [weak self] (_) in
-            self?.searchBar.resignFirstResponder()
-            self?.handler?(nil)
+            guard let weakSelf = self else { return }
+            weakSelf.searchBar.resignFirstResponder()
+            weakSelf.handler?(weakSelf.selectedInfo)
             currentNavigationController?.popViewController(animated: true)
         })
         
@@ -153,12 +155,25 @@ extension XLocationSelectionViewController {
         mapView.setMapStatus(mapStatus, withAnimation: true, withAnimationTime: 350)
     }
     
+    private func _poiSearch(keywords: [String], location: CLLocationCoordinate2D) {
+        let option = BMKPOINearbySearchOption()
+        option.keywords = keywords
+        option.location = location
+        option.radius = 100000
+        option.pageSize = 20
+        poiSearch.delegate = self
+        poiSearch.poiSearchNear(by: option)
+    }
+    
 }
 
 extension XLocationSelectionViewController {
     
-    static public func show(with handler: LocationSelectedHandler? = nil) {
+    static public func show(coordinate: CLLocationCoordinate2D? = nil, with handler: LocationSelectedHandler? = nil) {
         let vc = XLocationSelectionViewController()
+        if coordinate != nil {
+            vc.currentLocation = coordinate!
+        }
         vc.handler = handler
         vc.hidesBottomBarWhenPushed = true
         currentNavigationController?.pushViewController(vc, animated: true)
@@ -170,15 +185,8 @@ extension XLocationSelectionViewController: UISearchBarDelegate {
     
     public func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
-        if let keyword = searchBar.text {
-            let option = BMKPOINearbySearchOption()
-            option.keywords = [keyword] //keyword.components(separatedBy: ",")
-            option.location = currentLocation
-//            option.scope = BMKPOISearchScopeType.BMK_POI_SCOPE_DETAIL_INFORMATION
-            option.pageSize = 20
-            poiSearch.delegate = self
-            let success = poiSearch.poiSearchNear(by: option)
-            print("OpenSDK   searchBarSearchButtonClicked   \(success)")
+        if let keyword = searchBar.text, let location = currentLocation {
+            _poiSearch(keywords: [keyword], location: location)
         }
     }
     
@@ -191,11 +199,16 @@ extension XLocationSelectionViewController: UISearchBarDelegate {
 extension XLocationSelectionViewController: BMKMapViewDelegate {
     
     public func mapViewDidFinishLoading(_ mapView: BMKMapView!) {
-        XLocationManager.default.startUpdatingLocation { [weak self] (info, error) in
-            self?.pinImageView.isHidden = false
-            if let location = info?.location {
-                self?.currentLocation = location.coordinate
-                self?._updateMapStatus(location.coordinate)
+        if let location = self.currentLocation {
+            pinImageView.isHidden = false
+            _updateMapStatus(location)
+        } else {
+            XLocationManager.default.startUpdatingLocation { [weak self] (info, error) in
+                self?.pinImageView.isHidden = false
+                if let location = info?.location {
+                    self?.currentLocation = location.coordinate
+                    self?._updateMapStatus(location.coordinate)
+                }
             }
         }
     }
@@ -226,6 +239,9 @@ extension XLocationSelectionViewController: BMKPoiSearchDelegate {
     public func onGetPoiResult(_ searcher: BMKPoiSearch!, result poiResult: BMKPOISearchResult!, errorCode: BMKSearchErrorCode) {
         if errorCode == BMK_SEARCH_NO_ERROR {
             if poiResult.totalPOINum != 0 {
+                poiInfos = poiResult.poiInfoList.filter({ (info) -> Bool in
+                    return info.address != ""
+                })
                 tableView.isHidden = false
                 tableView.reloadData()
             }
@@ -241,10 +257,11 @@ extension XLocationSelectionViewController: UITableViewDataSource {
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if let cell = tableView.dequeueReusableCell(withIdentifier: "identifier") as? LocationTableViewCell {
+        if let cell = tableView.dequeueReusableCell(withIdentifier: NSStringFromClass(LocationTableViewCell.self)) as? LocationTableViewCell {
             let poiInfo = poiInfos[indexPath.row]
+            cell.separatorLine.isHidden = indexPath.row == poiInfos.count - 1
             cell.text0Label.text = poiInfo.address
-            cell.text1Label.text = "\(poiInfo.city)\(poiInfo.area)"
+            cell.text1Label.text = "\(poiInfo.city ?? "")\(poiInfo.area ?? "")"
             return cell
         }
         return UITableViewCell()
@@ -253,6 +270,10 @@ extension XLocationSelectionViewController: UITableViewDataSource {
 }
 
 extension XLocationSelectionViewController: UITableViewDelegate {
+    
+    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return LocationTableViewCell.height
+    }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
@@ -299,21 +320,21 @@ extension XLocationSelectionViewController {
         static let height: CGFloat = 60
         
         lazy var text0Label: UILabel = {
-            let label = UILabel(frame: CGRect(x: 15, y: 15, width: UIScreen.width - 30, height: 20))
-            label.font = UIFont.systemFont(ofSize: 17)
+            let label = UILabel(frame: CGRect(x: 15, y: 10, width: UIScreen.width - 50, height: 20))
+            label.font = UIFont.systemFont(ofSize: 16)
             label.textColor = UIColor(hexColor: "#333333")
             return label
         }()
         
         lazy var text1Label: UILabel = {
-            let label = UILabel(frame: CGRect(x: 15, y: LocationTableViewCell.height - 15 - 20, width: UIScreen.width - 30, height: 20))
-            label.font = UIFont.systemFont(ofSize: 17)
+            let label = UILabel(frame: CGRect(x: 15, y: LocationTableViewCell.height - 10 - 20, width: UIScreen.width - 50, height: 20))
+            label.font = UIFont.systemFont(ofSize: 14)
             label.textColor = UIColor(hexColor: "#666666")
             return label
         }()
         
         lazy var separatorLine: UIView = {
-            let view = UIView(frame: CGRect(x: 15, y: LocationTableViewCell.height - 0.5, width: UIScreen.width - 30, height: 0.5))
+            let view = UIView(frame: CGRect(x: 15, y: LocationTableViewCell.height - 1, width: UIScreen.width - 30, height: 1))
             view.backgroundColor = UIColor(hexColor: "#f7f7f7")
             return view
         }()
@@ -326,8 +347,9 @@ extension XLocationSelectionViewController {
             self.selectedBackgroundView = selectedBackgroundView
             separatorInset = UIEdgeInsets(top: 0, left: UIScreen.width, bottom: 0, right: 0)
             
-            addSubview(text0Label)
-            addSubview(text1Label)
+            contentView.addSubview(text0Label)
+            contentView.addSubview(text1Label)
+            contentView.addSubview(separatorLine)
         }
         
         required init?(coder aDecoder: NSCoder) {

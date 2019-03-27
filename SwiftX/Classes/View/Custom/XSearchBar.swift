@@ -35,6 +35,10 @@ public class XSearchBar: UISearchBar {
         self.init(frame: CGRect.zero)
     }
     
+    public override var intrinsicContentSize: CGSize {
+        return UIView.layoutFittingExpandedSize
+    }
+    
     public override init(frame: CGRect) {
         super.init(frame: frame)
         
