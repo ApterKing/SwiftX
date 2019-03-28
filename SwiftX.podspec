@@ -211,7 +211,7 @@ Pod::Spec.new do |s|
         ssss.frameworks = 'CoreLocation', 'SystemConfiguration', 'Security', 'Security', 'CoreTelephony', 'AdSupport'
         ssss.libraries = 'sqlite3'
         ssss.pod_target_xcconfig = {
-          'OTHER_LDFLAGS' => '-Objc',
+          'OTHER_LDFLAGS' => '-Objc -all_load',
         }
       end
       
@@ -223,9 +223,9 @@ Pod::Spec.new do |s|
         ssss.vendored_frameworks = 'SwiftX/Classes/OpenSDK/Baidu/Map/*.framework'
         ssss.vendored_libraries = 'SwiftX/Classes/OpenSDK/Baidu/Map/thirdlibs/*.a'
         ssss.frameworks = 'CoreGraphics', 'CoreLocation', 'OpenGLES', 'QuartzCore', 'Security', 'SystemConfiguration'
-        ssss.libraries = 'sqlite3'
+        ssss.libraries = 'sqlite3', 'c++'
         ssss.pod_target_xcconfig = {
-          'OTHER_LDFLAGS' => '-Objc',
+          'OTHER_LDFLAGS' => '-Objc -all_load',
         }
         
       end

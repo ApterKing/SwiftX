@@ -9,10 +9,10 @@ final public class XBMKMapManager: NSObject {
     
     static public let `default` = XBMKMapManager()
     private override init() {}
-    private var mapManager = BMKMapManager()
+    private lazy var mapManager = BMKMapManager()
     
     public func start(_ appkey: String) {
-//        mapManager.start(appkey, generalDelegate: self)
+        mapManager.start(appkey, generalDelegate: self)
     }
     
 }
