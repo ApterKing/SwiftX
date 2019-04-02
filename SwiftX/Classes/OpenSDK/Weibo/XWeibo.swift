@@ -12,6 +12,8 @@ final public class XWeibo: NSObject {
     
     public static let `default` = XWeibo()
     private override init() {}
+    public var accessToken: String?
+    public var uid: String?
     
     /** MARK: 登录回调
      *  @param  error: 错误
@@ -27,7 +29,7 @@ final public class XWeibo: NSObject {
     
     // 在调用前必须注册
     public func register(appKey: String) {
-        WeiboSDK.enableDebugMode(false)
+        WeiboSDK.enableDebugMode(true)
         WeiboSDK.registerApp(appKey)
     }
     
@@ -44,10 +46,11 @@ final public class XWeibo: NSObject {
 /// MARK: 认证
 public extension XWeibo {
     
-    public func auth(with handler: AuthHandler? = nil) {
+    public func auth(with redirectURI: String = "https://api.weibo.com/oauth2/default.html", handler: AuthHandler? = nil) {
+        self.authHandler = handler
         let authRequest = WBAuthorizeRequest.request() as! WBAuthorizeRequest
         authRequest.scope = "all"
-        authRequest.redirectURI = "https://api.weibo.com/oauth2/default.html"
+        authRequest.redirectURI = redirectURI
         authRequest.shouldShowWebViewForAuthIfCannotSSO = true
         WeiboSDK.send(authRequest)
     }
@@ -75,9 +78,9 @@ extension XWeibo: WeiboSDKDelegate {
     public func didReceiveWeiboResponse(_ response: WBBaseResponse!) {
         if let response = response as? WBAuthorizeResponse {  // 登录
             if response.statusCode == WeiboSDKResponseStatusCode.success {
-                let token = response.accessToken!
-                let userID = response.userID!
-                WBHttpRequest(accessToken: token, url: "https://api.weibo.com/2/eps/user/info.json", httpMethod: "GET", params: ["access_token": token, "uid": userID], delegate: self, withTag: "auth")
+                accessToken = response.accessToken!
+                uid = response.userID!
+                WBHttpRequest(accessToken: accessToken!, url: "https://api.weibo.com/2/users/show.json", httpMethod: "GET", params: ["access_token": accessToken!, "uid": uid!], delegate: self, withTag: "auth")
             } else {
                 authHandler?(NSError(domain: "com.SwiftX.OpenSDK.Weibo", code: response.statusCode.rawValue, description: "微博授权失败"), nil, nil)
             }

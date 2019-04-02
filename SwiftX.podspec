@@ -30,7 +30,7 @@ Pod::Spec.new do |s|
   # ---------------  Core  -----------
   s.subspec 'Core' do |ss|
     ss.source_files = 'SwiftX/Classes/*.h'
-    ss.public_header_files = 'SwiftX/Classes/SwiftX/*.h'
+    ss.public_header_files = 'SwiftX/Classes/*.h'
   end
 
   # ---------------  Globals  -----------
@@ -180,12 +180,12 @@ Pod::Spec.new do |s|
     # Weibo: 3.2.3
     ss.subspec 'Weibo' do |sss|
       sss.source_files = 'SwiftX/Classes/OpenSDK/Weibo/*.{swift,h,m}'
-      sss.resources = 'SwiftX/Classes/OpenSDK/Weibo/*.bundle'
+      sss.resource = 'SwiftX/Classes/OpenSDK/Weibo/*.bundle'
       sss.vendored_libraries = 'SwiftX/Classes/OpenSDK/Weibo/*.a'
-      sss.frameworks = 'QuartzCore', 'ImageIO', 'SystemConfiguration', 'Security', 'CoreTelephony', 'CoreText', 'CoreGraphics', 'UIKit', 'Foundation', 'CFNetwork', 'Security'
+      sss.frameworks   = 'Photos', 'ImageIO', 'SystemConfiguration', 'CoreText', 'QuartzCore', 'Security', 'UIKit', 'Foundation', 'CoreGraphics','CoreTelephony'
       sss.libraries = 'sqlite3', 'z'
       sss.pod_target_xcconfig = {
-        'OTHER_LDFLAGS' => '-Objc -all_load',
+        'OTHER_LDFLAGS' => '-Objc',
       }
     end
     

@@ -31,7 +31,7 @@ public extension XHttp.Rx {
                     switch result {
                     case .progress(_, _):
                         observer.onNext(result)
-                    case .success():
+                    case .success(_):
                         observer.onNext(result)
                         observer.onCompleted()
                     case .failure(let error):
@@ -58,7 +58,7 @@ public extension XHttp.Rx {
                     switch result {
                     case .progress(_, _):
                         observer.onNext(result)
-                    case .success():
+                    case .success(_):
                         observer.onNext(result)
                         observer.onCompleted()
                     case .failure(let error):
@@ -78,7 +78,7 @@ public extension XHttp.Rx {
                     switch result {
                     case .progress(_, _):
                         observer.onNext(result)
-                    case .success():
+                    case .success(_):
                         observer.onNext(result)
                         observer.onCompleted()
                     case .failure(let error):

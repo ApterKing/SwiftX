@@ -47,7 +47,7 @@ public extension XHttp.Result {
         case progress(Int64, Int64)
         
         // 成功
-        case success()
+        case success(Data)
         
         // 失败
         case failure(Error)

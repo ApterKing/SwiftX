@@ -77,33 +77,47 @@ fileprivate class XURLSessionDownloaderTaskDelegate: NSObject, URLSessionDownloa
             }
         } catch let error {
             #if DEBUG
-            NSLog("XHttpManagerDownloader  didFinishDownloadingTo fail")
+            NSLog("XHttp.Downloader  didFinishDownloadingTo fail")
             #endif
-            handler?(.failure(error))
+            _processOnMain { [weak self] () in
+                self?.handler?(.failure(error))
+            }
         }
     }
     
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
         #if DEBUG
-        NSLog("XHttpManagerDownloader progress:  \(bytesWritten)  \(totalBytesWritten)  \(totalBytesExpectedToWrite)")
+        NSLog("XHttp.Downloader progress:  \(bytesWritten)  \(totalBytesWritten)  \(totalBytesExpectedToWrite)")
         #endif
-        handler?(.progress(totalBytesWritten, totalBytesExpectedToWrite))
+        
+        _processOnMain { [weak self] () in
+            self?.handler?(.progress(totalBytesWritten, totalBytesExpectedToWrite))
+        }
     }
     
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didResumeAtOffset fileOffset: Int64, expectedTotalBytes: Int64) {
         #if DEBUG
-        NSLog("XHttpManagerDownloader didResumeAtOffset:  \(fileOffset)  \(expectedTotalBytes)")
+        NSLog("XHttp.Downloader didResumeAtOffset:  \(fileOffset)  \(expectedTotalBytes)")
         #endif
     }
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         #if DEBUG
-        NSLog("XHttpManagerDownloader didCompleteWithError: \(String(describing: error))")
+        NSLog("XHttp.Downloader didCompleteWithError: \(String(describing: error))")
         #endif
-        if error != nil {
-            handler?(.failure(error!))
-        } else {
-            handler?(.success(fileURL!))
+        _processOnMain { [weak self] () in
+            guard let weakSelf = self else { return }
+            if error != nil {
+                weakSelf.handler?(.failure(error!))
+            } else {
+                weakSelf.handler?(.success(weakSelf.fileURL!))
+            }
+        }
+    }
+    
+    private func _processOnMain(_ block: @escaping (() -> Void)) {
+        DispatchQueue.main.async {
+            block()
         }
     }
 }

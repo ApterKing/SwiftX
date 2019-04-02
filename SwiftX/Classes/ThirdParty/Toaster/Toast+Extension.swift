@@ -51,12 +51,16 @@ public extension Toast {
     static func cancelCurrent() {
         ToastCenter.default.currentToast?.cancel()
     }
+    
+    static func setupKeyboardVisibleManager() {
+        _ = UIKeyboardVisibleManager.share
+    }
 }
 
 class UIKeyboardVisibleManager {
     static let share : UIKeyboardVisibleManager = UIKeyboardVisibleManager()
     fileprivate(set) var isVisible  = false
-    init(){
+    init() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidHide), name: UIResponder.keyboardDidHideNotification, object: nil)
     }
