@@ -118,7 +118,6 @@ extension XWheelView {
         timer = Timer.scheduledTimer(withTimeInterval: wheelInterval, repeats: true, block: { [weak self] (_) in
             self?._nextPage()
         })
-        timer?.fire()
         RunLoop.current.add(timer!, forMode: .common)
     }
     
@@ -132,7 +131,7 @@ extension XWheelView {
         let pages = dataSource?.numberOfItems(in: self) ?? 0
         guard pages > 0 else { return }
         
-        if currentIndexPath.row == pages {
+        if currentIndexPath.row == pages - 1 {
             currentIndexPath = IndexPath(row: 0, section: currentIndexPath.section + 1 >= numberOfSections ? numberOfSections / 2 : currentIndexPath.section + 1)
         } else {
             currentIndexPath = IndexPath(row: currentIndexPath.row + 1, section: currentIndexPath.section)
@@ -217,7 +216,7 @@ extension XWheelView: UICollectionViewDelegateFlowLayout {
     public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         _startTimer()
         
-        if let indexPath = collectionView.indexPathsForVisibleItems.first {
+        if let indexPath = collectionView.indexPathsForVisibleItems.last {
             currentIndexPath = indexPath
         }
     }

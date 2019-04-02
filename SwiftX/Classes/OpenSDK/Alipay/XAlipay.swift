@@ -31,12 +31,14 @@ extension XAlipay {
     
     public func pay(with orderString: String, scheme: String, payHandler: PayHandler? = nil) {
         self.payHandler = payHandler
-        AlipaySDK.defaultService()?.payOrder(orderString, fromScheme: scheme, callback: { (result) in
+        AlipaySDK.defaultService()?.payOrder(orderString, fromScheme: scheme, callback: { [weak self] (result) in
             print("XAlipay  pay  ----   \(result)")
             guard let status = result?["resultStatus"] as? String else { return }
-            let memo = result?["memo"] as? String
+            let memo = result?["memo"] as? String ?? "支付失败"
             if status == "9000" {  // 支付成功
-                
+                self?.payHandler?(nil)
+            } else {
+                self?.payHandler?(NSError(domain: "com.SwiftX.OpenSDK.Alipay", code: Int(status) ?? -1, description: memo))
             }
         })
     }

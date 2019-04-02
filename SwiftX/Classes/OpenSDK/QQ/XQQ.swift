@@ -20,7 +20,7 @@ final public class XQQ: NSObject {
     private var authHandler: AuthHandler?
     
     private var _auth: TencentOAuth?
-    
+
     // 在调用前必须注册
     public func register(appKey: String) {
         _auth = TencentOAuth(appId: appKey, andDelegate: self)
@@ -58,8 +58,12 @@ public extension XQQ {
     
     private func _handle(error: Error?, response: APIResponse?) {
         if let jsonResponse = response?.jsonResponse {
-            let entity = try? JSONDecoder.decode(AuthEntity.self, from: jsonResponse)
-            authHandler?(nil, entity, jsonResponse)
+            var tmpJsonResponse = jsonResponse
+            tmpJsonResponse["openid"] = _auth?.openId ?? ""
+            tmpJsonResponse["unionid"] = _auth?.unionid ?? ""
+            tmpJsonResponse["appid"] = _auth?.appId ?? ""
+            let entity = try? JSONDecoder.decode(AuthEntity.self, from: tmpJsonResponse)
+            authHandler?(nil, entity, tmpJsonResponse)
         } else {
             authHandler?(error, nil, nil)
         }
