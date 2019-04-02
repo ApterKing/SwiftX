@@ -14,6 +14,7 @@ import UIKit
 
 @objc public protocol XWheelViewDelegate: NSObjectProtocol {
     @objc optional func wheelView(_ wheelView: XWheelView, didSelectItemAt index: Int)
+    @objc optional func wheelView(_ wheelView: XWheelView, didScrollTo index: Int)
 }
 
 /// MARK: 通过UICollectionView实现的轮播控件
@@ -43,6 +44,7 @@ open class XWheelView: UIView {
     private var currentIndexPath: IndexPath = IndexPath(row: 0, section: 0) {
         didSet {
             pageControl.currentPage = currentIndexPath.row
+            delegate?.wheelView?(self, didScrollTo: pageControl.currentPage)
         }
     }
     private var timer: Timer?
