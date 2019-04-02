@@ -8,7 +8,7 @@
 import UIKit
 
 // 类似于选择电影的旋转木马flowLayout
-open class XCollectionViewCarouselFlowLayout: UICollectionViewFlowLayout {
+open class XCarouselFlowLayout: UICollectionViewFlowLayout {
     
     public enum SpacingMode {
         case fixed(spacing: CGFloat)
@@ -26,7 +26,7 @@ open class XCollectionViewCarouselFlowLayout: UICollectionViewFlowLayout {
     @IBInspectable open var sideItemScale: CGFloat = 0.8
     @IBInspectable open var sideItemAlpha: CGFloat = 0.6
     @IBInspectable open var sideItemShift: CGFloat = 0.0
-    open var spacingMode = XCollectionViewCarouselFlowLayout.SpacingMode.fixed(spacing: 40)
+    open var spacingMode = XCarouselFlowLayout.SpacingMode.fixed(spacing: 40)
     
     fileprivate var state = LayoutState(size: CGSize.zero, direction: .horizontal)
     

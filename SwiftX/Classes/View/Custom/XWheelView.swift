@@ -17,7 +17,7 @@ import UIKit
 }
 
 /// MARK: 通过UICollectionView实现的轮播控件
-final public class XWheelView: UIView {
+open class XWheelView: UIView {
     
     private let numberOfSections: Int = 100000
     
@@ -48,17 +48,17 @@ final public class XWheelView: UIView {
     private var timer: Timer?
     
     @IBInspectable
-    public var dataSource: XWheelViewDataSource? {
+    open var dataSource: XWheelViewDataSource? {
         didSet {
             reloadData()
         }
     }
     
     @IBInspectable
-    public var delegate: XWheelViewDelegate?
+    open var delegate: XWheelViewDelegate?
     
     @IBInspectable
-    public var autoWheel: Bool = true {
+    open var autoWheel: Bool = true {
         didSet {
             if autoWheel {
                 _startTimer()
@@ -69,9 +69,9 @@ final public class XWheelView: UIView {
     }
     
     @IBInspectable
-    public var wheelInterval: TimeInterval = 5
+    open var wheelInterval: TimeInterval = 5
     
-    override public func awakeFromNib() {
+    override open func awakeFromNib() {
         super.awakeFromNib()
         _initUI()
     }
@@ -85,12 +85,12 @@ final public class XWheelView: UIView {
         _initUI()
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
         _initUI()
     }
     
-    public override func layoutSubviews() {
+    open override func layoutSubviews() {
         super.layoutSubviews()
         collectionView.frame = bounds
         pageControl.frame = CGRect(x: 0, y: height - 30, width: width, height: 20)
@@ -131,7 +131,7 @@ extension XWheelView {
         guard pages > 0 else { return }
         
         if currentIndexPath.row == pages {
-            currentIndexPath = IndexPath(row: 0, section: currentIndexPath.section + 1)
+            currentIndexPath = IndexPath(row: 0, section: currentIndexPath.section + 1 >= numberOfSections ? numberOfSections / 2 : currentIndexPath.section + 1)
         } else {
             currentIndexPath = IndexPath(row: currentIndexPath.row + 1, section: currentIndexPath.section)
         }
