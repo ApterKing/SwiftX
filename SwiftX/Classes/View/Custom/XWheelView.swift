@@ -37,7 +37,7 @@ open class XWheelView: UIView {
     }()
     private lazy var pageControl: UIPageControl = {
         let pc = UIPageControl(frame: CGRect.zero)
-        pc.currentPageIndicatorTintColor = UIColor.white
+        pc.currentPageIndicatorTintColor = UIColor(hexColor: "#66B30C")
         pc.pageIndicatorTintColor = UIColor.lightGray
         return pc
     }()

@@ -45,7 +45,7 @@ public extension UIViewController {
     
     fileprivate func configNavigationBarShadow(_ hidden: Bool) {
         navigationController?.navigationBar.setBackgroundImage(hidden ? UIImage() : nil, for: .default)
-        navigationController?.navigationBar.shadowImage = hidden ? UIImage() : nil
+        navigationController?.navigationBar.shadowImage = hidden ? UIImage() : UIImage(color: UIColor(hexColor: "#f6f6f6") ?? UIColor.lightGray) 
     }
     
     // 是否将navigationbar 半透明
