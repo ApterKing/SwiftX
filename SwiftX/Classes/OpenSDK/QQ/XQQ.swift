@@ -59,9 +59,9 @@ public extension XQQ {
     private func _handle(error: Error?, response: APIResponse?) {
         if let jsonResponse = response?.jsonResponse {
             var tmpJsonResponse = jsonResponse
-            tmpJsonResponse["openid"] = _auth?.openId ?? ""
-            tmpJsonResponse["unionid"] = _auth?.unionid ?? ""
-            tmpJsonResponse["appid"] = _auth?.appId ?? ""
+            tmpJsonResponse["openid"] = _auth?.openId
+            tmpJsonResponse["unionid"] = _auth?.unionid ?? _auth?.openId
+            tmpJsonResponse["appid"] = _auth?.appId
             let entity = try? JSONDecoder.decode(AuthEntity.self, from: tmpJsonResponse)
             authHandler?(nil, entity, tmpJsonResponse)
         } else {

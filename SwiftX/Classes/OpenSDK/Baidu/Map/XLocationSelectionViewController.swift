@@ -28,7 +28,7 @@ final public class XLocationSelectionViewController: XBaseViewController {
     }()
     
     private lazy var mapView: BMKMapView = {
-        let mapView = BMKMapView(frame: CGRect(x: 0, y: 0, width: UIScreen.width, height: UIScreen.height - UIScreen.navigationBarHeight))
+        let mapView = BMKMapView(frame: CGRect(x: 0, y: 0, width: UIScreen.width, height: UIScreen.height - UIScreen.navigationBarHeight - UIScreen.homeIndicatorMoreHeight))
         mapView.delegate = self
         mapView.showsUserLocation = true
         mapView.isOverlookEnabled = true

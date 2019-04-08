@@ -164,7 +164,7 @@ extension XBaseViewController {
         }
     }
     
-    @objc public func goBack() {
+    @objc open func goBack() {
         if navigationController?.viewControllers.count ?? 0 > 1 {
             navigationController?.popViewController(animated: true)
         } else if presentingViewController != nil {

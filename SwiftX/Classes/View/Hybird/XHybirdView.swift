@@ -10,7 +10,7 @@ import UIKit
 import WebKit
 
 // 自定义webView代理
-@objc protocol XHybirdViewDelegate {
+@objc public protocol XHybirdViewDelegate {
     
     @objc optional func hybirdView(_ hybirdView: XHybirdView, shouldStartLoadWith request: URLRequest, navigationType: UIWebView.NavigationType) -> Bool
     
@@ -24,13 +24,13 @@ import WebKit
     
 }
 
-class XLocalstorageManager {
+open class XLocalstorageManager {
     static var sharePreferences = WKPreferences()
     static var shareProcessPool = WKProcessPool()
 }
 
 // 通过WKWebView实现，提供了进度加载进度条，headerView，footerView
-class XHybirdView: UIView {
+open class XHybirdView: UIView {
     
     private var wkContentView: UIView!
     private var latestScrollViewContentSize = CGSize.zero
@@ -39,6 +39,8 @@ class XHybirdView: UIView {
         let userContentController = WKUserContentController()
         
         configuration.preferences = XLocalstorageManager.sharePreferences
+        configuration.preferences.minimumFontSize = 17
+        configuration.preferences.javaScriptEnabled = true
         configuration.processPool = XLocalstorageManager.shareProcessPool
         configuration.userContentController = userContentController
         
@@ -53,7 +55,7 @@ class XHybirdView: UIView {
     }()
     
     // 为hybirdView添加头部视图
-    var hybirdHeaderView: UIView? {
+    open var hybirdHeaderView: UIView? {
         didSet {
             if let headerView = hybirdHeaderView {
                 if let view = scrollView.viewWithTag(Int.max) {
@@ -67,7 +69,7 @@ class XHybirdView: UIView {
     }
     
     // 为hybirdView添加尾部视图
-    var hybirdFooterView: UIView? {
+    open var hybirdFooterView: UIView? {
         didSet {
             if let footerView = hybirdFooterView {
                 if let view = scrollView.viewWithTag(Int.max) {
@@ -78,45 +80,45 @@ class XHybirdView: UIView {
         }
     }
     
-    var delegate: XHybirdViewDelegate? {
+    open var delegate: XHybirdViewDelegate? {
         didSet {
             wkWebView.navigationDelegate = self
         }
     }
-    var request: URLRequest?
-    var scrollView: UIScrollView {
+    open var request: URLRequest?
+    open var scrollView: UIScrollView {
         get {
             return wkWebView.scrollView
         }
     }
     
-    var canGoBack: Bool {
+    open var canGoBack: Bool {
         get {
             return wkWebView.canGoBack
         }
     }
     
-    var canGoForward: Bool {
+    open var canGoForward: Bool {
         get {
             return wkWebView.canGoForward
         }
     }
     
-    var webView: WKWebView {
+    open var webView: WKWebView {
         get {
             return wkWebView
         }
     }
     
-    func loadRequest(_ request: URLRequest) -> WKNavigation? {
+    open func loadRequest(_ request: URLRequest) -> WKNavigation? {
         return wkWebView.load(request)
     }
     
-    func loadHTMLString(_ string: String, baseURL: URL?) -> WKNavigation? {
+    open func loadHTMLString(_ string: String, baseURL: URL?) -> WKNavigation? {
         return wkWebView.loadHTMLString(string, baseURL: baseURL)
     }
     
-    func reload() {
+    open func reload() {
         wkWebView.reload()
     }
     

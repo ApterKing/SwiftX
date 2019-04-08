@@ -239,7 +239,7 @@ extension XWeChat: WXApiDelegate {
             if response.errCode == WXSuccess.rawValue {
                 payHandler?(nil)
             } else {
-                payHandler?(NSError(domain: "com.SwiftX.OpenSDK.WeChat", code: Int(response.errCode), description: response.errStr))
+                payHandler?(NSError(domain: "com.SwiftX.OpenSDK.WeChat", code: Int(response.errCode), description: response.errCode == -2 ? "支付失败, 用户取消支付" : response.errStr))
             }
         }
     }

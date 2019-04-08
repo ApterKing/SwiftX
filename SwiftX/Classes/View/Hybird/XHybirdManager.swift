@@ -10,9 +10,9 @@ import UIKit
 
 let kHybirdCookieChanged = NSNotification.Name(rawValue: "kHybirdCookieChanged")
 
-class XHybirdManager: NSObject {
+public class XHybirdManager: NSObject {
 
-    class func load(urlString: String, injectedHtml: String = "", scrollDelegate: UIScrollViewDelegate? = nil) -> UIViewController? {
+    open class func load(urlString: String, injectedHtml: String = "", scrollDelegate: UIScrollViewDelegate? = nil) -> UIViewController? {
         guard let url = URL(string: urlString) else {return nil}
         let hybirdVC = XHybirdViewController()
         hybirdVC.requestURL = url

@@ -170,9 +170,9 @@ public extension UIView {
                 bezierPath.close()
             }
             let shapeLayer = CAShapeLayer()
+            shapeLayer.frame = bounds
             shapeLayer.path = bezierPath.cgPath
             self.layer.mask = shapeLayer
-            self.layer.masksToBounds = true
             return
         }
     }

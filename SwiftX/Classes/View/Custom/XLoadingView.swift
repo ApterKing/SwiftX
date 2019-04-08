@@ -74,17 +74,6 @@ open class XLoadingView: UIView {
         return label
     }()
     
-    private lazy var timer: CADisplayLink = {
-        let displayLink = CADisplayLink(target: self, selector: #selector(_animate))
-        displayLink.add(to: .current, forMode: .default)
-        if #available(iOS 10, *) {
-            displayLink.preferredFramesPerSecond = 60
-        } else {
-            displayLink.frameInterval = 60
-        }
-        displayLink.isPaused = true
-        return displayLink
-    }()
     private lazy var tapGesture: UITapGestureRecognizer = {
         let gesture = UITapGestureRecognizer(target: self, action: #selector(_tapAction))
         return gesture
@@ -130,7 +119,6 @@ open class XLoadingView: UIView {
     }
     
     deinit {
-        timer.invalidate()
     }
 }
 
@@ -138,11 +126,11 @@ extension XLoadingView {
     
     @objc private func _resetState() {
         if state == .loading {
-            timer.isPaused = false
+            _startAnimate()
             contentView.isHidden = true
             loadingView.isHidden = false
         } else {
-            timer.isPaused = true
+            _stopAnimate()
             contentView.isHidden = false
             loadingView.isHidden = true
         }
@@ -164,24 +152,21 @@ extension XLoadingView {
         delegate?.loadingViewDidTapped?(self)
     }
     
-    // 这里不使用UIView隐式动画的原因是，多个loadingView时，存在动画中断
-    @objc private func _animate() {
+    @objc private func _startAnimate() {
+        loadingImageView.isHidden = false
+        loadingImageView.frame = CGRect(origin: CGPoint(x: (loadingView.width - loadingImageView.width) / 2.0, y: loadingShadowImageView.top - loadingImageView.height), size: loadingImageView.frame.size)
         
-        var step: CGFloat = 10
-        if #available(iOS 10, *) {
-            step = (loadingView.height - loadingShadowImageView.height) / CGFloat(timer.preferredFramesPerSecond)
-        } else {
-            step = (loadingView.height - loadingShadowImageView.height) / CGFloat(timer.frameInterval)
-        }
-        
-        loadingImageView.top = loadingImageView.top + (isUp ? -step : step)
-        let scale = loadingImageView.top / (loadingView.height - loadingShadowImageView.height - loadingImageView.height) / 2.0
-        loadingShadowImageView.transform = CGAffineTransform(scaleX: 0.7 + scale, y: 0.7 + scale)
-        if isUp {
-            isUp = loadingImageView.top > 0
-        } else {
-            isUp = loadingImageView.top > loadingView.height - loadingShadowImageView.height - loadingImageView.height
-        }
+        var endCenter = loadingImageView.center
+        endCenter.y -= 40
+        let transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
+        UIView.animate(withDuration: 0.75, delay: 0, options: UIView.AnimationOptions(rawValue: AnimationOptions.repeat.rawValue | AnimationOptions.autoreverse.rawValue), animations: {
+            self.loadingImageView.center = endCenter
+            self.loadingImageView.transform = transform
+        }, completion: nil)
+    }
+    
+    @objc private func _stopAnimate() {
+        loadingImageView.isHidden = true
     }
     
 }

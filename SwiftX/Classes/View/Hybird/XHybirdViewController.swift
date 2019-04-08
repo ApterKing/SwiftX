@@ -9,7 +9,7 @@
 import UIKit
 import WebKit
 
-class XHybirdViewController: XBaseViewController {
+open class XHybirdViewController: XBaseViewController {
     
     var requestURL: URL?
     let hybirdView = XHybirdView()
@@ -29,17 +29,17 @@ class XHybirdViewController: XBaseViewController {
         return progressV
     }()
     
-    override func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
         
         _initUI()
     }
     
-    override func viewDidLayoutSubviews() {
+    override open func viewDidLayoutSubviews() {
         hybirdView.frame = view.bounds
     }
     
-    override func didReceiveMemoryWarning() {
+    override open func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
