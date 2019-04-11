@@ -100,6 +100,17 @@ Pod::Spec.new do |s|
       sss.frameworks = 'UIKit', 'Foundation'
     end
   end
+  
+  # --------------  AppVersion  ----------------
+  s.subspec 'AppVersion' do |ss|
+    ss.source_files = 'SwiftX/Classes/AppVersion/*.swift'
+    ss.resources = ['SwiftX/Assets/AppVersion/*.png']
+    ss.frameworks = 'Foundation'
+    
+    ss.dependency 'SwiftX/Extensions'
+    ss.dependency 'SwiftX/Network'
+    ss.dependency 'SwiftX/JSON'
+  end
 
   # ---------------  Bluetooth  -----------
   s.subspec 'Bluetooth' do |ss|

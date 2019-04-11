@@ -233,7 +233,7 @@ extension XHybirdView: WKNavigationDelegate {
         decisionHandler(.allow)
     }
     
-    func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+    public func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
         if let footerView = hybirdFooterView, footerView.superview == nil {
             scrollView.addSubview(footerView)
             
