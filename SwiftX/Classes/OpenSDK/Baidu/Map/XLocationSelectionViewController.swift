@@ -29,7 +29,6 @@ final public class XLocationSelectionViewController: XBaseViewController {
     
     private lazy var mapView: BMKMapView = {
         let mapView = BMKMapView(frame: CGRect(x: 0, y: 0, width: UIScreen.width, height: UIScreen.height - UIScreen.navigationBarHeight - UIScreen.homeIndicatorMoreHeight))
-        mapView.delegate = self
         mapView.showsUserLocation = true
         mapView.isOverlookEnabled = true
         mapView.mapType = BMKMapType.standard
@@ -92,12 +91,12 @@ final public class XLocationSelectionViewController: XBaseViewController {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         mapView.viewWillAppear()
+        mapView.delegate = self
+        poiSearch.delegate = self
     }
     
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        mapView.delegate = self
-        poiSearch.delegate = self
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -148,11 +147,17 @@ extension XLocationSelectionViewController {
     }
     
     // 移动地图视图到中间
-    private func _updateMapStatus(_ location: CLLocationCoordinate2D) {
+    private func _updateMapStatus(_ location: CLLocationCoordinate2D, _ shouldGeoSearch: Bool = false) {
         let mapStatus = BMKMapStatus()
         mapStatus.targetGeoPt = location
         mapStatus.targetScreenPt = CGPoint(x: mapView.width / 2.0, y: mapView.height / 2.0)
         mapView.setMapStatus(mapStatus, withAnimation: true, withAnimationTime: 350)
+        
+        if shouldGeoSearch {
+            let option = BMKReverseGeoCodeSearchOption()
+            option.location = mapView.centerCoordinate
+            geoSearch.reverseGeoCode(option)
+        }
     }
     
     private func _poiSearch(keywords: [String], location: CLLocationCoordinate2D) {
@@ -199,24 +204,23 @@ extension XLocationSelectionViewController: UISearchBarDelegate {
 extension XLocationSelectionViewController: BMKMapViewDelegate {
     
     public func mapViewDidFinishLoading(_ mapView: BMKMapView!) {
+        selectedInfo = SelectedLocationInfo()
         if let location = self.currentLocation {
             pinImageView.isHidden = false
-            _updateMapStatus(location)
+            _updateMapStatus(location, true)
         } else {
             XLocationManager.default.startUpdatingLocation { [weak self] (info, error) in
                 self?.pinImageView.isHidden = false
                 if let location = info?.location {
                     self?.currentLocation = location.coordinate
-                    self?._updateMapStatus(location.coordinate)
+                    self?._updateMapStatus(location.coordinate, true)
                 }
             }
         }
     }
     
-    public func mapView(_ mapView: BMKMapView!, regionDidChangeAnimated animated: Bool) {
-        let option = BMKReverseGeoCodeSearchOption()
-        option.location = mapView.centerCoordinate
-        geoSearch.reverseGeoCode(option)
+    public func mapView(_ mapView: BMKMapView!, regionDidChangeAnimated animated: Bool, reason: BMKRegionChangeReason) {
+        selectedInfo?.location = mapView.centerCoordinate
     }
     
 }
@@ -225,7 +229,9 @@ extension XLocationSelectionViewController: BMKGeoCodeSearchDelegate {
     
     public func onGetReverseGeoCodeResult(_ searcher: BMKGeoCodeSearch!, result: BMKReverseGeoCodeSearchResult!, errorCode error: BMKSearchErrorCode) {
         if error == BMK_SEARCH_NO_ERROR {
-            selectedInfo = SelectedLocationInfo(result)
+            selectedInfo = SelectedLocationInfo()
+            selectedInfo?.address = result.address
+            selectedInfo?.location = result.location
             searchBar.text = result.address
             print("OpenSDK    onGetReverseGeoCodeResult   \(searchBar.text)")
         }
@@ -278,7 +284,12 @@ extension XLocationSelectionViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         tableView.isHidden = true
-        _updateMapStatus(poiInfos[indexPath.row].pt)
+        let poiInfo = poiInfos[indexPath.row]
+        selectedInfo?.address = poiInfo.address
+        selectedInfo?.location = poiInfo.pt
+        
+        searchBar.text = poiInfo.address
+        _updateMapStatus(poiInfo.pt)
     }
     
 }
@@ -288,27 +299,8 @@ extension XLocationSelectionViewController {
     
     /// 回调参数
     public class SelectedLocationInfo: NSObject {
-        
         public var location: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 0, longitude: 0)
         public var address: String = ""
-        
-        public var country: String?
-        public var province: String?
-        public var city: String?
-        public var district: String?
-        public var adCode: String?
-        
-        fileprivate convenience init(_ result: BMKReverseGeoCodeSearchResult) {
-            self.init()
-            location = result.location
-            address = result.address
-
-            country = result.addressDetail.country
-            province = result.addressDetail.province
-            city = result.addressDetail.city
-            district = result.addressDetail.district
-            adCode = result.addressDetail.adCode
-        }
     }
     
 }

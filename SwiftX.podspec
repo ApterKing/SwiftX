@@ -204,11 +204,11 @@ Pod::Spec.new do |s|
     ss.subspec 'JPush' do |sss|
         sss.source_files = 'SwiftX/Classes/OpenSDK/JPush/*.{swift,h,m}'
         sss.vendored_libraries = 'SwiftX/Classes/OpenSDK/JPush/*.a'
-        sss.frameworks = 'CFNetwork', 'CoreFoundation', 'CoreTelephony', 'SystemConfiguration', 'CoreGraphics', 'Foundation', 'CoreGraphics', 'UIKit', 'Foundation', 'CFNetwork', 'Security', 'UserNotifications'
+        sss.frameworks = 'CFNetwork', 'CoreFoundation', 'CoreTelephony', 'SystemConfiguration', 'CoreGraphics', 'Foundation', 'UIKit', 'Security', 'UserNotifications'
         sss.libraries = 'z', 'resolv'
-#        sss.pod_target_xcconfig = {
-#            'OTHER_LDFLAGS' => '-Objc -all_load',
-#        }
+        sss.pod_target_xcconfig = {
+            'OTHER_LDFLAGS' => '-Objc -all_load',
+        }
     end
     
     # Baidu
