@@ -62,6 +62,7 @@ public extension XQQ {
             tmpJsonResponse["openid"] = _auth?.openId
             tmpJsonResponse["unionid"] = _auth?.unionid ?? _auth?.openId
             tmpJsonResponse["appid"] = _auth?.appId
+            print("fuck  --- qq   \(tmpJsonResponse)")
             let entity = try? JSONDecoder.decode(AuthEntity.self, from: tmpJsonResponse)
             authHandler?(nil, entity, tmpJsonResponse)
         } else {
@@ -150,7 +151,7 @@ public extension XQQ {
 extension XQQ: TencentSessionDelegate {
     
     public func tencentDidLogin() {
-        if _auth?.getUserInfo() == true {
+        if _auth?.requestUnionId() == true, _auth?.getUserInfo() == true {
             #if DEBUG
             NSLog("com.SwiftX.OpenSDK.XQQ   --   login success")
             #endif

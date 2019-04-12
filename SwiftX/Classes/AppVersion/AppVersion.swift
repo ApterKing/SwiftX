@@ -8,37 +8,40 @@
 public class AppVersion: NSObject {
     
     static public func check(bundleId: String, delay: TimeInterval = 10, showEmbedAlertViewController: Bool = true, _ complection: ((_ info: AppVersion.Info?, _ error: Error?) -> Void)?) {
-        let params: [AnyHashable: Any] = ["bundleId": bundleId]
-        XHttp.get("http://itunes.apple.com/lookup", .query, params, nil, { (result) in
-            switch result {
-            case .success(let data):
-                if let infos = try? JSONDecoder.decode([AppVersion.Info].self, from: data, forKeyPath: "results") {
-                    var hasNewVersionInfo = false
-                    for info in infos {
-                        if info.bundleId == bundleId {
-                            hasNewVersionInfo = true
-                            complection?(info, nil)
-                            
-                            if showEmbedAlertViewController {
-                                showAllertController(with: info)
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + delay) {
+            let params: [AnyHashable: Any] = ["bundleId": bundleId]
+            XHttp.get("http://itunes.apple.com/lookup", .query, params, XHttp.Configuration(), { (result) in
+                switch result {
+                case .success(let data):
+                    do {
+                        let infos = try JSONDecoder.decode([AppVersion.Info].self, from: data, forKey: "results")
+                        var hasNewVersionInfo = false
+                        for info in infos {
+                            if info.bundleId == bundleId {
+                                hasNewVersionInfo = true
+                                complection?(info, nil)
+                                
+                                if showEmbedAlertViewController {
+                                    showAllertController(with: info)
+                                }
+                                break
                             }
-                            break
                         }
+                        if !hasNewVersionInfo {
+                            complection?(nil, NSError(domain: "com.SwiftX.AppVersion", code: -1, description: "未查找到相关应用"))
+                        }
+                    } catch let error {
+                        complection?(nil, error)
                     }
-                    if !hasNewVersionInfo {
-                        complection?(nil, NSError(domain: "com.SwiftX.AppVersion", code: -1, description: "未查找到相关应用"))
-                    }
-                    
+                case .failure(let error):
+                    complection?(nil, error)
                 }
-            case .failure(let error):
-                complection?(nil, error)
-            }
-        })
-
+            })
+        }
     }
     
     static private func showAllertController(with info: Info) {
-        guard let currentBundleId = Bundle.bundleIdentifier, info.version > currentBundleId else { return }
+        guard let currentVersion = Bundle.bundleShortVersion, info.version > currentVersion else { return }
         AppVersionAlertController.show(info: info)
     }
 
@@ -51,7 +54,7 @@ extension AppVersion {
         public var version: String = ""         // short version ex: 1.0.0
         public var releaseNotes: String = ""    // 更新内容
         
-        public var trackId: String = ""         // App id
+        public var trackId: Int64 = 0         // App id
         public var trackViewUrl: String = ""         // Appstore 地址
         public var trackCensoredName: String = ""    //
         

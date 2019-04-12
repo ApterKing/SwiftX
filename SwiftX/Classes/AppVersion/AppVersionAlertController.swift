@@ -46,12 +46,17 @@ extension AppVersionAlertController {
         opacityView.alpha = 0.01
         view.addSubview(opacityView)
         
-        let size = CGSize(width: UIScreen.width - 40, height: (UIScreen.width - 40) * 1018 / 855)
-        infoView.frame = CGRect(origin: CGPoint(x: 20, y: (UIScreen.height - size.height) / 2.0), size: size)
+        let margin: CGFloat = 30
+        let size = CGSize(width: UIScreen.width - 2 * margin, height: (UIScreen.width - 2 * margin) * 1018 / 855)
+        infoView.frame = CGRect(origin: CGPoint(x: margin, y: (UIScreen.height - size.height) / 2.0), size: size)
         view.addSubview(infoView)
         
+        let imageView = UIImageView(image: UIImage(named: "bg_version", in: Bundle(for: self.classForCoder), compatibleWith: nil))
+        imageView.frame = infoView.bounds
+        infoView.addSubview(imageView)
+        
         let button0 = UIButton(type: .custom)
-        button0.frame = CGRect(x: 20, y: 40, width: 44, height: 44)
+        button0.frame = CGRect(x: 15, y: 40, width: 44, height: 44)
         button0.tag = 0
         button0.setImage(UIImage(named: "icon_version_close", in: Bundle(for: self.classForCoder), compatibleWith: nil), for: .normal)
         button0.addTarget(self, action: #selector(_buttonAction(_:)), for: .touchUpInside)
@@ -64,23 +69,23 @@ extension AppVersionAlertController {
         button1.setTitleColor(UIColor(hexColor: "#66B30C"), for: .normal)
         button1.clipsToBounds = true
         button1.layer.cornerRadius = 5
+        button1.layer.borderWidth = 1.0
         button1.layer.borderColor = UIColor(hexColor: "#66B30C").cgColor
         button1.addTarget(self, action: #selector(_buttonAction(_:)), for: .touchUpInside)
         infoView.addSubview(button1)
         
         if let reloeaseNotes = info?.releaseNotes {
             let releaseNotesLabel = UILabel()
+            releaseNotesLabel.text = reloeaseNotes
+            releaseNotesLabel.textColor = UIColor(hexColor: "#333333")
             releaseNotesLabel.textAlignment = .left
             releaseNotesLabel.font = UIFont.systemFont(ofSize: 15)
             releaseNotesLabel.numberOfLines = 0
-            let height = reloeaseNotes.heightWith(font: releaseNotesLabel.font, limitWidth: infoView.width - 40)
-            releaseNotesLabel.frame = CGRect(x: 20, y: infoView.height - button1.y - height - 30, width: infoView.width - 40, height: height + 5)
+            let textHeight = reloeaseNotes.heightWith(font: releaseNotesLabel.font, limitWidth: infoView.width - 40)
+            releaseNotesLabel.frame = CGRect(x: button1.x, y: (infoView.height - textHeight) / 2.0 + 30, width: infoView.width - button1.x * 2, height: textHeight + 5)
             infoView.addSubview(releaseNotesLabel)
         }
         
-        let imageView = UIImageView(image: UIImage(named: "bg_version", in: Bundle(for: self.classForCoder), compatibleWith: nil))
-        imageView.frame = infoView.bounds
-        infoView.addSubview(imageView)
     }
     
     @objc private func _buttonAction(_ sender: UIButton) {

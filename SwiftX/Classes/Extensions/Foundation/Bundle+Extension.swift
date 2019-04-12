@@ -10,7 +10,7 @@ import UIKit
 
 public extension Bundle {
     
-    static var bundleShortVersion: String? {
+    static var bundleShortVersion: String? {   // 1.0.0
         get {
            return Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
         }
