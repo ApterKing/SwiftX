@@ -39,8 +39,8 @@ open class XHybirdView: UIView {
         let userContentController = WKUserContentController()
         
         configuration.preferences = XLocalstorageManager.sharePreferences
-        configuration.preferences.minimumFontSize = 17
-        configuration.preferences.javaScriptEnabled = true
+//        configuration.preferences.minimumFontSize = 17
+//        configuration.preferences.javaScriptEnabled = true
         configuration.processPool = XLocalstorageManager.shareProcessPool
         configuration.userContentController = userContentController
         
