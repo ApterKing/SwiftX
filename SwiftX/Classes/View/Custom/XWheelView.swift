@@ -15,6 +15,12 @@ import UIKit
 @objc public protocol XWheelViewDelegate: NSObjectProtocol {
     @objc optional func wheelView(_ wheelView: XWheelView, didSelectItemAt index: Int)
     @objc optional func wheelView(_ wheelView: XWheelView, didScrollTo index: Int)
+    
+    @objc optional func wheelViewWillBeginDragging(_ wheelView: XWheelView)
+    @objc optional func wheelViewDidEndDragging(_ wheelView: XWheelView, willDecelerate decelerate: Bool)
+    @objc optional func wheelViewDidEndDecelerating(_ wheelView: XWheelView)
+    @objc optional func wheelViewDidEndDraging(_ wheelView: XWheelView)
+    @objc optional func wheelViewDidScroll(_ wheelView: XWheelView)
 }
 
 /// MARK: 通过UICollectionView实现的轮播控件
@@ -71,7 +77,42 @@ open class XWheelView: UIView {
     }
     
     @IBInspectable
+    open var cycle: Bool = true {
+        didSet {
+            currentIndexPath = IndexPath(row: currentIndexPath.row, section: 0)
+            collectionView.reloadData()
+        }
+    }
+    
+    @IBInspectable
     open var wheelInterval: TimeInterval = 5
+    
+    open var bounces: Bool {
+        get {
+            return collectionView.bounces
+        }
+        set {
+            collectionView.bounces = newValue
+        }
+    }
+    
+    open var contentSize: CGSize {
+        get {
+            return collectionView.contentSize
+        }
+        set {
+            collectionView.contentSize = newValue
+        }
+    }
+    
+    open var contentOffset: CGPoint {
+        get {
+            return collectionView.contentOffset
+        }
+        set {
+            collectionView.contentOffset = newValue
+        }
+    }
     
     override open func awakeFromNib() {
         super.awakeFromNib()
@@ -132,7 +173,7 @@ extension XWheelView {
         guard pages > 0 else { return }
         
         if currentIndexPath.row == pages - 1 {
-            currentIndexPath = IndexPath(row: 0, section: currentIndexPath.section + 1 >= numberOfSections ? numberOfSections / 2 : currentIndexPath.section + 1)
+            currentIndexPath = IndexPath(row: 0, section: cycle ? (currentIndexPath.section + 1 >= numberOfSections ? numberOfSections / 2 : currentIndexPath.section + 1) : 0)
         } else {
             currentIndexPath = IndexPath(row: currentIndexPath.row + 1, section: currentIndexPath.section)
         }
@@ -160,7 +201,7 @@ extension XWheelView {
         collectionView.reloadData()
         let pages = dataSource?.numberOfItems(in: self) ?? 0
         if pages > 0 {
-            currentIndexPath = IndexPath(row: currentIndexPath.row, section: numberOfSections / 2)
+            currentIndexPath = IndexPath(row: currentIndexPath.row, section: cycle ? numberOfSections / 2 : 0)
             collectionView.scrollToItem(at: currentIndexPath, at: .left, animated: false)
         }
         pageControl.numberOfPages = pages
@@ -174,7 +215,7 @@ extension XWheelView {
 extension XWheelView: UICollectionViewDataSource {
     
     public func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return numberOfSections
+        return cycle ? numberOfSections : 1
     }
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -210,10 +251,16 @@ extension XWheelView: UICollectionViewDelegateFlowLayout {
     }
     
     public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        delegate?.wheelViewWillBeginDragging?(self)
         _stopTimer()
     }
     
+    public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        delegate?.wheelViewDidEndDragging?(self, willDecelerate: decelerate)
+    }
+    
     public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        delegate?.wheelViewDidEndDecelerating?(self)
         _startTimer()
         
         if let indexPath = collectionView.indexPathsForVisibleItems.last {
@@ -221,4 +268,7 @@ extension XWheelView: UICollectionViewDelegateFlowLayout {
         }
     }
     
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        delegate?.wheelViewDidScroll?(self)
+    }
 }
