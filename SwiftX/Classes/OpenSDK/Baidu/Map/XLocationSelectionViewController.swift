@@ -164,7 +164,7 @@ extension XLocationSelectionViewController {
         let option = BMKPOINearbySearchOption()
         option.keywords = keywords
         option.location = location
-        option.radius = 100000
+        option.radius = 1000000000
         option.pageSize = 20
         poiSearch.delegate = self
         poiSearch.poiSearchNear(by: option)

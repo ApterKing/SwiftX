@@ -175,7 +175,7 @@ extension XWheelView {
         if currentIndexPath.row == pages - 1 {
             currentIndexPath = IndexPath(row: 0, section: cycle ? (currentIndexPath.section + 1 >= numberOfSections ? numberOfSections / 2 : currentIndexPath.section + 1) : 0)
         } else {
-            currentIndexPath = IndexPath(row: currentIndexPath.row + 1, section: currentIndexPath.section)
+            currentIndexPath = IndexPath(row: currentIndexPath.row + 1, section: cycle ? currentIndexPath.section : 0)
         }
         collectionView.scrollToItem(at: currentIndexPath, at: .left, animated: true)
     }
