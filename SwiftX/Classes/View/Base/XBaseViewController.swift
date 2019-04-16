@@ -196,4 +196,12 @@ extension XBaseViewController: XLoadingViewDelegate {
             return nil
         }
     }
+    
+    open func loadingViewButtonDidTapped(_ loadingView: XLoadingView) {
+        
+    }
+    
+    open func loadingViewTitleForButton(_ loadingView: XLoadingView) -> String? {
+        return nil
+    }
 }

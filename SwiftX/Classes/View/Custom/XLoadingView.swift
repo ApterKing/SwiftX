@@ -18,6 +18,10 @@ import UIKit
     @objc optional func loadingViewPromptImage(_ loadingView: XLoadingView) -> UIImage?
     @objc optional func loadingViewPromptText(_ loadingView: XLoadingView) -> NSAttributedString?
     
+    // 下方按钮
+    @objc optional func loadingViewTitleForButton(_ loadingView: XLoadingView) -> String?
+    @objc optional func loadingViewButtonDidTapped(_ loadingView: XLoadingView)
+    
 }
 
 open class XLoadingView: UIView {
@@ -56,6 +60,7 @@ open class XLoadingView: UIView {
         let view = UIView()
         view.addSubview(promptImageView)
         view.addSubview(promptLabel)
+        view.addSubview(promptButton)
         return view
     }()
     private lazy var promptImageView: UIImageView = {
@@ -72,6 +77,18 @@ open class XLoadingView: UIView {
         label.textAlignment = .center
         label.numberOfLines = 0
         return label
+    }()
+    private lazy var promptButton: UIButton = {
+        let button = UIButton()
+        button.setTitleColor(UIColor(hexColor: "#66B30C"), for: .normal)
+        button.layer.cornerRadius = 5
+        button.layer.borderColor = UIColor(hexColor: "#66B30C").cgColor
+        button.layer.borderWidth = 1
+        button.clipsToBounds = true
+        button.isHidden = true
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+        button.addTarget(self, action: #selector(_buttonAction), for: .touchUpInside)
+        return button
     }()
     
     private lazy var tapGesture: UITapGestureRecognizer = {
@@ -108,9 +125,7 @@ open class XLoadingView: UIView {
     override open func layoutSubviews() {
         super.layoutSubviews()
         contentView.frame = bounds
-        promptImageView.frame = CGRect(origin: CGPoint(x: (contentView.width - promptImageView.width) / 2.0, y: (contentView.height - promptImageView.height) / 2.0 - 80), size: promptImageView.frame.size)
-        promptLabel.frame = CGRect(x: 0, y: promptImageView.top + promptImageView.height + 20, width: contentView.width, height: 40)
-        
+
         loadingView.frame = CGRect(x: (width - 40) / 2.0, y: (height - 80) / 2.0, width: 40, height: 80)
         loadingShadowImageView.frame = CGRect(origin: CGPoint(x: (loadingView.width - loadingShadowImageView.width) / 2.0, y: loadingView.height - loadingShadowImageView.height), size: loadingShadowImageView.frame.size)
         loadingImageView.frame = CGRect(origin: CGPoint(x: (loadingView.width - loadingImageView.width) / 2.0, y: loadingShadowImageView.top - loadingImageView.height), size: loadingImageView.frame.size)
@@ -140,16 +155,32 @@ extension XLoadingView {
         } else {
             promptImageView.image = UIImage(named: "icon_prompt", in: Bundle(for: self.classForCoder), compatibleWith: nil)
         }
+        promptImageView.frame = CGRect(origin: CGPoint(x: (contentView.width - promptImageView.width) / 2.0, y: (contentView.height - promptImageView.height) / 2.0 - 80), size: promptImageView.frame.size)
         
         if let text = delegate?.loadingViewPromptText?(self) {
             promptLabel.attributedText = text
         } else {
             promptLabel.text = state.rawValue
         }
+        promptLabel.frame = CGRect(x: 0, y: promptImageView.top + promptImageView.height + 20, width: contentView.width, height: 40)
+        
+        var size = CGSize.zero
+        if let title = delegate?.loadingViewTitleForButton?(self) {
+            size = title.boundingSize(with: CGSize(width: UIScreen.width, height: 44), font: promptButton.titleLabel?.font ?? UIFont.systemFont(ofSize: 14))
+            promptButton.frame = CGRect(x: (UIScreen.width - size.width - 50) / 2.0, y: promptLabel.y + promptLabel.height + 20, width: size.width + 50, height: 34)
+            promptButton.setTitle(title, for: .normal)
+            promptButton.isHidden = false
+        } else {
+            promptButton.isHidden = true
+        }
     }
     
     @objc private func _tapAction() {
         delegate?.loadingViewDidTapped?(self)
+    }
+    
+    @objc private func _buttonAction() {
+        delegate?.loadingViewButtonDidTapped?(self)
     }
     
     @objc private func _startAnimate() {

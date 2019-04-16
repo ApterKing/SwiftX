@@ -71,6 +71,7 @@ final public class XLocationSelectionViewController: XBaseViewController {
         return search
     }()
     
+    private var poiSearchCity: String?
     private lazy var poiSearch: BMKPoiSearch = {
         let search = BMKPoiSearch()
         return search
@@ -161,23 +162,30 @@ extension XLocationSelectionViewController {
     }
     
     private func _poiSearch(keywords: [String], location: CLLocationCoordinate2D) {
-        let option = BMKPOINearbySearchOption()
-        option.keywords = keywords
-        option.location = location
-        option.radius = 1000000000
+//        let option = BMKPOINearbySearchOption()
+//        option.keywords = keywords
+//        option.location = location
+//        option.radius = 1000000000
+        let option = BMKPOICitySearchOption()
+        option.keyword = keywords[0]
+        option.city = poiSearchCity ?? (XLocationManager.default.locationInfo?.city ?? "成都市")
         option.pageSize = 20
         poiSearch.delegate = self
-        poiSearch.poiSearchNear(by: option)
+//        poiSearch.poiSearchNear(by: option)
+        poiSearch.poiSearch(inCity: option)
     }
     
 }
 
 extension XLocationSelectionViewController {
     
-    static public func show(coordinate: CLLocationCoordinate2D? = nil, with handler: LocationSelectedHandler? = nil) {
+    static public func show(coordinate: CLLocationCoordinate2D? = nil, poiSearchCity: String? = nil, with handler: LocationSelectedHandler? = nil) {
         let vc = XLocationSelectionViewController()
         if coordinate != nil {
             vc.currentLocation = coordinate!
+        }
+        if poiSearchCity != nil {
+            vc.poiSearchCity = poiSearchCity
         }
         vc.handler = handler
         vc.hidesBottomBarWhenPushed = true

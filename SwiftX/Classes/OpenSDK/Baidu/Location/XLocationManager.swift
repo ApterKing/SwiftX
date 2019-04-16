@@ -10,6 +10,7 @@ final public class XLocationManager: NSObject {
     public typealias CompletionHandler = ((_ info: LocationInfo?, _ error: Error?) -> Void)
 
     static public let `default` = XLocationManager()
+    public var locationInfo: LocationInfo?
     private override init() {}
     private lazy var locationManager: BMKLocationManager = {
         let manager = BMKLocationManager()
@@ -25,6 +26,7 @@ final public class XLocationManager: NSObject {
     public func startUpdatingLocation(_ complection: CompletionHandler? = nil) {
         locationManager.requestLocation(withReGeocode: true, withNetworkState: true) { (location, state, error) in
             if let location = location {
+                self.locationInfo = LocationInfo(location)
                 complection?(LocationInfo(location), nil)
             } else {
                 complection?(nil, error)
