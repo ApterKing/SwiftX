@@ -83,7 +83,7 @@ final public class XLocationSelectionViewController: XBaseViewController {
     private var poiInfos: [BMKPoiInfo] = []
     private var handler: LocationSelectedHandler?
     private var currentLocation: CLLocationCoordinate2D?
-
+    
     override public func viewDidLoad() {
         super.viewDidLoad()
         _initUI()
@@ -123,7 +123,7 @@ extension XLocationSelectionViewController {
         let options: [UIControlStateOption] = [.title("确定", UIColor(hexColor: "#66B30C"), .normal),
                                                .title("确定", UIColor(hexColor: "#a0a0a5"), .disabled),
                                                .title("确定", UIColor(hexColor: "#66B30C").withAlphaComponent(0.7), .highlighted)
-                                            ]
+        ]
         navigationItem.rightBarButtonItem = customBarButtonItem(options: options, size: CGSize(width: 60, height: 44), isBackItem: false, left: false, handler: { [weak self] (_) in
             guard let weakSelf = self else { return }
             weakSelf.searchBar.resignFirstResponder()
@@ -162,16 +162,11 @@ extension XLocationSelectionViewController {
     }
     
     private func _poiSearch(keywords: [String], location: CLLocationCoordinate2D) {
-//        let option = BMKPOINearbySearchOption()
-//        option.keywords = keywords
-//        option.location = location
-//        option.radius = 1000000000
         let option = BMKPOICitySearchOption()
         option.keyword = keywords[0]
         option.city = poiSearchCity ?? (XLocationManager.default.locationInfo?.city ?? "成都市")
         option.pageSize = 20
         poiSearch.delegate = self
-//        poiSearch.poiSearchNear(by: option)
         poiSearch.poiSearch(inCity: option)
     }
     
@@ -254,7 +249,7 @@ extension XLocationSelectionViewController: BMKPoiSearchDelegate {
         if errorCode == BMK_SEARCH_NO_ERROR {
             if poiResult.totalPOINum != 0 {
                 poiInfos = poiResult.poiInfoList.filter({ (info) -> Bool in
-                    return info.address != ""
+                    return info.address != nil
                 })
                 tableView.isHidden = false
                 tableView.reloadData()
@@ -359,4 +354,3 @@ extension XLocationSelectionViewController {
     }
     
 }
-

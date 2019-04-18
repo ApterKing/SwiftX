@@ -14,6 +14,7 @@ final public class XLocationManager: NSObject {
     private override init() {}
     private lazy var locationManager: BMKLocationManager = {
         let manager = BMKLocationManager()
+        manager.coordinateType = BMKLocationCoordinateType.BMK09LL
         manager.distanceFilter = kCLDistanceFilterNone
         manager.desiredAccuracy = kCLLocationAccuracyBest
         return manager
