@@ -109,7 +109,7 @@ public extension XCache {
 
             // 存入内部持有的内存缓存
             let entry = Entry(object: object, expiry: .date(date), fileURL: fileURL)
-            memoryCache.setObject(entry, forKey: NSString(string: self.sanitizedKey(key)))
+            memoryCache.setObject(entry, forKey: NSString(string: sanitizedKey))
 
             return entry
         }
@@ -182,7 +182,7 @@ public extension XCache {
             
             for url in filesToDelete {
                 try FileManager.default.removeItem(at: url)
-                memoryCache.removeObject(forKey: NSString(string: sanitizedKey(url.lastPathComponent)))
+                memoryCache.removeObject(forKey: NSString(string: url.lastPathComponent))
             }
             
             try removeObjectsIfCacheSizeExceed(resourceObjects, totalSize: totalSize)
@@ -221,7 +221,7 @@ public extension XCache {
             
             for file in sortedFiles {
                 try FileManager.default.removeItem(at: file.url)
-                memoryCache.removeObject(forKey: NSString(string: sanitizedKey(file.url.lastPathComponent)))
+                memoryCache.removeObject(forKey: NSString(string: file.url.lastPathComponent))
                 
                 if let fileSize = file.resourceValues.totalFileAllocatedSize {
                     totalSize -= UInt(fileSize)
