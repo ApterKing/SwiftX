@@ -45,10 +45,19 @@ public extension XCache {
     final public class Disk: CacheAware {
         
         fileprivate let config: XCache.Configuration.Disk
+
+        /// 磁盘缓存维护一个内存缓存，以减少IO读取（仅仅在读取时使用）
+        private lazy var memoryCache: NSCache<NSString, XCache.Entry> = {
+            let cache = NSCache<NSString, XCache.Entry>()
+            cache.countLimit = 1024
+            cache.totalCostLimit = 1024 * 1024 * 100
+            return cache
+        }()
+
         public init(_ config: XCache.Configuration.Disk) {
             self.config = config
         }
-        
+
         // 存储
         public func setObject(_ object: Any, forKey key: String, expiry: XCache.Expiry?) throws {
             let sanitizedKey = self.sanitizedKey(key)
@@ -70,9 +79,15 @@ public extension XCache {
         
         // 查询
         public func entry(forKey key: String) throws -> XCache.Entry {
+
+            // 优先读取读取内存缓存
             let sanitizedKey = self.sanitizedKey(key)
+            let memoryEntry = memoryCache.object(forKey: NSString(string: sanitizedKey))
+            if memoryEntry != nil {
+                return memoryEntry!
+            }
+
             let fileURL = config.cachedURL.appendingPathComponent(sanitizedKey)
-            
             var fileData: Data?
             var expiryDate: Date?
             
@@ -91,7 +106,12 @@ public extension XCache {
                 throw XCache.CacheError.decodingFailed
             }
             unarchiver.finishDecoding()
-            return Entry(object: object, expiry: .date(date), fileURL: fileURL)
+
+            // 存入内部持有的内存缓存
+            let entry = Entry(object: object, expiry: .date(date), fileURL: fileURL)
+            memoryCache.setObject(entry, forKey: NSString(string: self.sanitizedKey(key)))
+
+            return entry
         }
         
         
@@ -101,6 +121,7 @@ public extension XCache {
             
             if FileManager.default.fileExists(atPath: fileURL.path) {
                 try FileManager.default.removeItem(at: fileURL)
+                memoryCache.removeObject(forKey: NSString(string: sanitizedKey(key)))
             } else {
                 throw XCache.CacheError.notExists
             }
@@ -111,12 +132,14 @@ public extension XCache {
             
             if entry.expired {
                 try removeObject(forKey: key)
+                memoryCache.removeObject(forKey: NSString(string: sanitizedKey(key)))
             }
         }
         
         public func removeAll() throws {
             try FileManager.default.removeItem(at: config.cachedURL)
             try FileManager.default.createDirectory(at: config.cachedURL, withIntermediateDirectories: true, attributes: nil)
+            memoryCache.removeAllObjects()
         }
         
         public func removeExpiredObjects() throws {
@@ -159,6 +182,7 @@ public extension XCache {
             
             for url in filesToDelete {
                 try FileManager.default.removeItem(at: url)
+                memoryCache.removeObject(forKey: NSString(string: sanitizedKey(url.lastPathComponent)))
             }
             
             try removeObjectsIfCacheSizeExceed(resourceObjects, totalSize: totalSize)
@@ -197,6 +221,7 @@ public extension XCache {
             
             for file in sortedFiles {
                 try FileManager.default.removeItem(at: file.url)
+                memoryCache.removeObject(forKey: NSString(string: sanitizedKey(file.url.lastPathComponent)))
                 
                 if let fileSize = file.resourceValues.totalFileAllocatedSize {
                     totalSize -= UInt(fileSize)
