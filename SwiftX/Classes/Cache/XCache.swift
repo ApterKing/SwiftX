@@ -77,7 +77,7 @@ final public class XCache: CacheAware {
         hybirdCache = XCache.Hybird(memory: memoryCache, disk: diskCache)
 
         syncCache = XCache.Sync(hybirdCache, DispatchQueue(label: "com.swiftx.cache.sync"))
-        asyncCache = XCache.Async(hybirdCache, DispatchQueue(label: "com.swiftx.cache.async"))
+        asyncCache = XCache.Async(hybirdCache, DispatchQueue(label: "com.swiftx.cache.async", attributes: .concurrent))
     }
 
     // 同步存储
