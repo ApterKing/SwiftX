@@ -41,7 +41,9 @@ public extension JSONDecoder {
     static public func decode<T>(_ type: T.Type, from object: Any, forKeyPath keyPath: String? = nil) throws -> T where T : Decodable {
         if let string = object as? String {
             guard let data = string.data(using: .utf8) else {
-                throw NSError(domain: kJSONDecoderDomain, code: JSONError.illegalUTF8Data.rawValue, userInfo: [NSLocalizedDescriptionKey: JSONError.illegalUTF8Data.description])
+                throw NSError(domain: kJSONDecoderDomain,
+                              code: JSONError.illegalUTF8Data.rawValue,
+                              userInfo: [NSLocalizedDescriptionKey: JSONError.illegalUTF8Data.description])
             }
             return try decode(T.self, from: data, forKeyPath: keyPath)
         } else if let data = object as? Data {
@@ -54,7 +56,9 @@ public extension JSONDecoder {
                 throw error
             }
         } else {
-            throw NSError(domain: kJSONDecoderDomain, code: JSONError.illegalConvert.rawValue, userInfo: [NSLocalizedDescriptionKey: JSONError.illegalConvert.description + " to \(T.self)"])
+            throw NSError(domain: kJSONDecoderDomain,
+                          code: JSONError.illegalConvert.rawValue,
+                          userInfo: [NSLocalizedDescriptionKey: JSONError.illegalConvert.description + " to \(T.self)"])
         }
     }
 
@@ -64,7 +68,9 @@ public extension JSONDecoder {
 extension JSONDecoder {
     
     static private let keyPathCodingUserInfoKey = CodingUserInfoKey(rawValue: "keyPathCodingUserInfoKey")!
-    static private func decode<T>(_ type: T.Type, from data: Data, forKeyPath keyPath: String? = nil) throws -> T where T : Decodable {
+    static private func decode<T>(_ type: T.Type,
+                                  from data: Data,
+                                  forKeyPath keyPath: String? = nil) throws -> T where T : Decodable {
         let decoder = JSONDecoder()
         
         guard let keyPath = keyPath else {
@@ -99,7 +105,9 @@ extension JSONDecoder {
         
         init(from decoder: Decoder) throws {
             guard let keyPath = decoder.userInfo[keyPathCodingUserInfoKey] as? [String], !keyPath.isEmpty else {
-                throw NSError(domain: kJSONDecoderDomain, code: JSONError.illegalKeyPath.rawValue, userInfo: [NSLocalizedDescriptionKey: JSONError.illegalKeyPath.description])
+                throw NSError(domain: kJSONDecoderDomain,
+                              code: JSONError.illegalKeyPath.rawValue,
+                              userInfo: [NSLocalizedDescriptionKey: JSONError.illegalKeyPath.description])
             }
             
             func keyPathCodingKey(from keyPath: [String]) -> KeyPathCodingKey {
@@ -112,12 +120,16 @@ extension JSONDecoder {
                 guard !keyPath.isEmpty else { return (container, codingKey) }
                 let nestedContainer = try container.nestedContainer(keyedBy: KeyPathCodingKey.self, forKey: codingKey)
                 let nestedCodingKey = try keyPathCodingKey(from: keyPath)
-                return try objectContainer(for: Array(keyPath.dropFirst()), container: nestedContainer, codingKey: nestedCodingKey)
+                return try objectContainer(for: Array(keyPath.dropFirst()),
+                                           container: nestedContainer,
+                                           codingKey: nestedCodingKey)
             }
             
             let codingKey = try keyPathCodingKey(from: keyPath)
             let container = try decoder.container(keyedBy: KeyPathCodingKey.self)
-            let (keyedContainer, key) = try objectContainer(for: Array(keyPath.dropFirst()), container: container, codingKey: codingKey)
+            let (keyedContainer, key) = try objectContainer(for: Array(keyPath.dropFirst()),
+                                                            container: container,
+                                                            codingKey: codingKey)
             object = try keyedContainer.decode(T.self, forKey: key)
         }
     }
