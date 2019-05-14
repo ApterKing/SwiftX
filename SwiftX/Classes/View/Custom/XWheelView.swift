@@ -56,14 +56,14 @@ open class XWheelView: UIView {
     private var timer: Timer?
     
     @IBInspectable
-    open var dataSource: XWheelViewDataSource? {
+    weak open var dataSource: XWheelViewDataSource? {
         didSet {
             reloadData()
         }
     }
     
     @IBInspectable
-    open var delegate: XWheelViewDelegate?
+    weak open var delegate: XWheelViewDelegate?
     
     @IBInspectable
     open var autoWheel: Bool = true {
@@ -137,8 +137,13 @@ open class XWheelView: UIView {
         super.layoutSubviews()
         collectionView.frame = bounds
         pageControl.frame = CGRect(x: 0, y: height - 30, width: width, height: 20)
-        
-        reloadData()
+    }
+
+    deinit {
+        if timer?.isValid ?? false {
+            timer?.invalidate()
+        }
+        timer = nil
     }
 
 }

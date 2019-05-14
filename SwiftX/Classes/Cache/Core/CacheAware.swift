@@ -9,112 +9,95 @@
 import Foundation
 
 public protocol CacheAware: CodableCacheAware {
-    
-    /**
-     Storage Data
 
-     - throws:
-     An error of type `XCache.CacheError`.
-
-     - parameters:
-        - object: Any can be NSKeyedArchiver stored.
-        - key: A unique identifier.
-        - expiry: expiration time @see `XCache.Expiry`.
-
-     */
+    ///
+    /// Storage Data
+    ///
+    /// - throws:
+    /// An error of type `XCache.CacheError`.
+    /// - parameters:
+    ///     - object: Any can be NSKeyedArchiver stored.
+    ///     - key: A unique identifier.
+    ///     - expiry: expiration time.
+    /// - SeeAlso: `XCache.Expiry`
+    ///
     func setObject(_ object: Any, forKey key: String, expiry: XCache.Expiry?) throws
 
-    /**
-     Retrive Data which enclose in `XCache.Entry`
-
-     - returns:
-     `XCache.Entry`
-
-     - throws:
-     An error of type `XCache.CacheError`
-
-     - parameters:
-        - key: A unique identifier.
-     */
+    ///
+    /// Retrive Data which enclose in `XCache.Entry`
+    ///
+    /// - returns:
+    /// `XCache.Entry`
+    /// - throws:
+    /// An error of type `XCache.CacheError`
+    /// - parameter key: A unique identifier.
+    ///
     func entry(forKey key: String) throws -> XCache.Entry
     
-    /**
-     Retrive Any NSKeyedArchiver Data.
-
-     - returns:
-     `Any` which can be Archived
-
-     - throws:
-     An error of type `XCache.CacheError`
-
-     - parameters:
-        - key: A unique identifier.
-     */
+    ///
+    /// Retrive Any NSKeyedArchiver Data.
+    ///
+    /// - returns:
+    /// `Any` which can be Archived
+    /// - throws:
+    /// An error of type `XCache.CacheError`
+    /// - parameter key: A unique identifier.
+    ///
     func object(forKey key: String) throws -> Any
     
-
-    /**
-     Remove data from caches
-
-     - throws:
-     An error of type `XCache.CacheError`
-
-     - parameters:
-        - key: A unique identifier.
-     */
+    ///
+    /// Remove data from caches
+    ///
+    /// - throws:
+    /// An error of type `XCache.CacheError`
+    /// - parameters key: A unique identifier.
+    ///
     func removeObject(forKey key: String) throws
     
-    /**
-     Remove expired data from caches
-
-     - throws:
-     An error of type `XCache.CacheError`
-
-     - parameters:
-        - key: A unique identifier.
-     */
+    ///
+    /// Remove expired data from caches
+    ///
+    /// - throws:
+    /// An error of type `XCache.CacheError`
+    /// - parameters key: A unique identifier.
+    ///
     func removeObjectIfExpired(forKey key: String) throws
 
-    /**
-     Remove all data from caches
-
-     - throws:
-     An error of type `XCache.CacheError`
-     */
+    ///
+    /// Remove all data from caches
+    ///
+    /// - throws:
+    /// An error of type `XCache.CacheError`
+    ///
     func removeAll() throws
 
-    /**
-     Remove all expired data from caches
-
-     - throws:
-     An error of type `XCache.CacheError`
-     */
+    ///
+    /// Remove all expired data from caches
+    ///
+    /// - throws:
+    /// An error of type `XCache.CacheError`
+    ///
     func removeExpiredObjects() throws
     
     
-    /**
-     Judge data whether exists
-
-     - returns:
-     exists true, or false
-
-     - parameters:
-        - key: A unique identifier.
-     */
+    ///
+    /// Judge data whether exists
+    ///
+    /// - returns:
+    /// exists true, or false
+    /// - parameter key: A unique identifier.
+    ///
     func existObject(forKey key: String) -> Bool
     
-    /**
-     Judge data whether expired
-
-     - returns:
-     exists true, or false
-
-     - throws:
-     if key isn't exist, throws an error of type `XCache.CacheError`
-
-     - parameters:
-        - key: A unique identifier.
-     */
+    ///
+    /// Judge data whether expired
+    ///
+    /// - returns:
+    /// exists true, or false
+    /// - throws:
+    /// if key isn't exist, throws an error of type `XCache.CacheError`
+    /// - parameter key: A unique identifier.
+    ///
     func isExpiredObject(forKey key: String) throws -> Bool
 }
 

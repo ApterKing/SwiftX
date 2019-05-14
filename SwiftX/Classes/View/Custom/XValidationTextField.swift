@@ -44,7 +44,6 @@ public class XValidationTextField: UIView, UIKeyInput, UITextInputTraits {
             self.setNeedsDisplay()
         }
     }
-    public var delegate: XValidationTextFieldDelegate?
     public var textColor: UIColor = UIColor.black {
         didSet {
             setNeedsDisplay()
@@ -71,6 +70,7 @@ public class XValidationTextField: UIView, UIKeyInput, UITextInputTraits {
             setNeedsDisplay()
         }
     }
+    weak open var delegate: XValidationTextFieldDelegate?
     
     public override init(frame: CGRect) {
         super.init(frame: frame)

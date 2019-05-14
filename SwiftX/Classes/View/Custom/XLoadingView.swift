@@ -98,7 +98,7 @@ open class XLoadingView: UIView {
     private var isUp = true
     
     /// MARK: outter
-    open var delegate: XLoadingViewDelegate? {
+    weak open var delegate: XLoadingViewDelegate? {
         didSet {
             if delegate?.loadingViewShouldEnableTap?(self) ?? false {
                 contentView.addGestureRecognizer(tapGesture)

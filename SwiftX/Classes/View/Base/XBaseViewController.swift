@@ -62,6 +62,8 @@ open class XBaseViewController: UIViewController {
 
     override open func viewDidLoad() {
         super.viewDidLoad()
+        XLog("lifecycle  \(NSStringFromClass(self.classForCoder))   viewDidLoad")
+
         view.backgroundColor = UIColor.white
         navigationController?.navigationBar.isTranslucent = false
         tabBarController?.tabBar.isTranslucent = false
@@ -77,33 +79,49 @@ open class XBaseViewController: UIViewController {
 
     override open func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
+        XLog("lifecycle  \(NSStringFromClass(self.classForCoder))   viewWillLayoutSubviews")
     }
 
     override open func viewDidLayoutSubviews() {
         super.viewWillLayoutSubviews()
+        XLog("lifecycle  \(NSStringFromClass(self.classForCoder))   viewDidLayoutSubviews")
+
         loadingView.frame = view.bounds
     }
 
     override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        XLog("lifecycle  \(NSStringFromClass(self.classForCoder))   viewDidAppear")
+
         isNavigationBarHiddenIfNeeded = navigationController?.isNavigationBarHidden ?? false
     }
     
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+        XLog("lifecycle  \(NSStringFromClass(self.classForCoder))   viewWillAppear")
+
         navigationController?.setNavigationBarHidden(isNavigationBarHiddenIfNeeded, animated: true)
     }
 
     override open func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        XLog("lifecycle  \(NSStringFromClass(self.classForCoder))   viewWillDisappear")
 
         navigationController?.setNavigationBarHidden(isNavigationBarHiddenIfNeeded, animated: true)
     }
 
+    open override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        XLog("lifecycle  \(NSStringFromClass(self.classForCoder))   viewDidDisappear")
+    }
+
     override open func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+        XLog("lifecycle  \(NSStringFromClass(self.classForCoder))   didReceiveMemoryWarning")
+    }
+
+    deinit {
+        XLog("lifecycle  \(NSStringFromClass(self.classForCoder))   deinit")
     }
 
     override open var preferredStatusBarStyle: UIStatusBarStyle {
