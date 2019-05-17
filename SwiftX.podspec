@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'SwiftX'
-  s.version          = '0.1.3'
+  s.version          = '1.0.0'
   s.summary          = 'Swift 相关扩展.'
 
   s.description      = <<-DESC
