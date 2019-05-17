@@ -16,12 +16,10 @@ Pod::Spec.new do |s|
 			Extensions: Foundation、UIKit、CoreGraphics
                        DESC
 
-  s.homepage         = 'https://github.com/wangcong/SwiftX'
-  # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
+  s.homepage         = 'https://github.com/ApterKing/SwiftX'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'wangcong' => 'wangcccong@foxmail.com' }
-  s.source           = { :git => 'https://github.com/wangcong/SwiftX.git', :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
+  s.source           = { :git => 'https://github.com/ApterKing/SwiftX.git', :tag => s.version.to_s }
 
   s.ios.deployment_target = '10.0'
   
