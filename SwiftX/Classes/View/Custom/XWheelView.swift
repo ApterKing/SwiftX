@@ -41,7 +41,7 @@ open class XWheelView: UIView {
         cv.showsHorizontalScrollIndicator = false
         return cv
     }()
-    private lazy var pageControl: UIPageControl = {
+    open lazy var pageControl: UIPageControl = {
         let pc = UIPageControl(frame: CGRect.zero)
         pc.currentPageIndicatorTintColor = UIColor(hexColor: "#66B30C")
         pc.pageIndicatorTintColor = UIColor.lightGray
