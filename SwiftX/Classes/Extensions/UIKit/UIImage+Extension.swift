@@ -28,7 +28,18 @@ public extension UIImage {
 
 // MARK: 图片压缩
 public extension UIImage {
-    public func compress(to length: Int) -> UIImage? {
+
+    public func compress(toData length: Int) -> Data? {
+        var compress: CGFloat = 1.0
+        var data = self.jpegData(compressionQuality: compress)
+        while (data?.count ?? 0) > length && compress > 0.01 {
+            compress *= 0.9
+            data = self.jpegData(compressionQuality: compress)
+        }
+        return data
+    }
+
+    public func compress(toImage length: Int) -> UIImage? {
         var compress: CGFloat = 1.0
         var data = self.jpegData(compressionQuality: compress)
         while (data?.count ?? 0) > length && compress > 0.01 {
