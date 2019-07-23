@@ -23,57 +23,47 @@ import Foundation
  *      XHttp.post("xx", .json, nil) { (data, error) in }
  */
 public class XHttp {
-    
-    /**
-     *  默认配置 convenience post请求
-     *  - Parameter: path  请求地址（如果在configuration配置了host，那么此时可以是短链）
-     *  - Parameter: requestSerializer  请求时参数需要序列化的格式
-     *  - Parameter: params 参数
-     *  - Parameter: handler 请求回调 for more @see XHttp.Result
-     *  - Return: URLSessionTask
-     */
-    static public func post(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ handler: ((_ result: XHttp.Result) -> Void)? = nil) -> URLSessionTask? {
-        return request(path, XHttp.Method.POST, requestSerializer, params, nil, handler)
-    }
-    
-    /**
-     *  特殊情况下的 convenience post请求（如：与整个项目不一致的第三方网络请求）
-     *  - Parameter: path  请求地址（如果在configuration配置了host，那么此时可以是短链）
-     *  - Parameter: requestSerializer  请求时参数需要序列化的格式
-     *  - Parameter: params 参数
-     *  - Parameter: configuration 非默认配置其他特殊配置
-     *  - Parameter: handler 请求回调 for more @see XHttp.Result
-     *  - Return: URLSessionTask
-     */
-    static public func post(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ configuration: XHttp.Configuration? = nil, _ handler: ((_ result: XHttp.Result) -> Void)? = nil) -> URLSessionTask? {
-        return request(path, XHttp.Method.POST, requestSerializer, params, configuration, handler)
-    }
-    
-    /**
-     *  默认配置 convenience get请求
-     *  - Parameter: path  请求地址（如果在configuration配置了host，那么此时可以是短链）
-     *  - Parameter: requestSerializer  请求时参数需要序列化的格式
-     *  - Parameter: params 参数
-     *  - Parameter: handler 请求回调 for more @see XHttp.Result
-     *  - Return: URLSessionTask
-     */
-    static public func get(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ handler: ((_ result: XHttp.Result) -> Void)? = nil) -> URLSessionTask? {
-        return request(path, XHttp.Method.GET, requestSerializer, params, nil, handler)
-    }
-    
-    /**
-     *  特殊情况下的 convenience get请求（如：与整个项目不一致的第三方网络请求）
-     *  - Parameter: path  请求地址（如果在configuration配置了host，那么此时可以是短链）
-     *  - Parameter: requestSerializer  请求时参数需要序列化的格式
-     *  - Parameter: params 参数
-     *  - Parameter: configuration 非默认配置其他特殊配置
-     *  - Parameter: handler 请求回调 for more @see XHttp.Result
-     *  - Return: URLSessionTask
-     */
+
+    /// MARK: GET
     static public func get(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ configuration: XHttp.Configuration? = nil, _ handler: ((_ result: XHttp.Result) -> Void)? = nil) -> URLSessionTask? {
         return request(path, XHttp.Method.GET, requestSerializer, params, configuration, handler)
     }
-    
+
+    /// MARK: HEAD
+    static public func head(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ configuration: XHttp.Configuration? = nil, _ handler: ((_ result: XHttp.Result) -> Void)? = nil) -> URLSessionTask? {
+        return request(path, XHttp.Method.HEAD, requestSerializer, params, configuration, handler)
+    }
+
+    /// MARK: POST
+    static public func post(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ configuration: XHttp.Configuration? = nil, _ handler: ((_ result: XHttp.Result) -> Void)? = nil) -> URLSessionTask? {
+        return request(path, XHttp.Method.POST, requestSerializer, params, configuration, handler)
+    }
+
+    /// MARK: PUT
+    static public func put(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ configuration: XHttp.Configuration? = nil, _ handler: ((_ result: XHttp.Result) -> Void)? = nil) -> URLSessionTask? {
+        return request(path, XHttp.Method.PUT, requestSerializer, params, configuration, handler)
+    }
+
+    /// MARK: DELETE
+    static public func delete(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ configuration: XHttp.Configuration? = nil, _ handler: ((_ result: XHttp.Result) -> Void)? = nil) -> URLSessionTask? {
+        return request(path, XHttp.Method.DELETE, requestSerializer, params, configuration, handler)
+    }
+
+    /// MARK: OPTIONS
+    static public func options(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ configuration: XHttp.Configuration? = nil, _ handler: ((_ result: XHttp.Result) -> Void)? = nil) -> URLSessionTask? {
+        return request(path, XHttp.Method.OPTIONS, requestSerializer, params, configuration, handler)
+    }
+
+    /// MARK: TRACE
+    static public func trace(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ configuration: XHttp.Configuration? = nil, _ handler: ((_ result: XHttp.Result) -> Void)? = nil) -> URLSessionTask? {
+        return request(path, XHttp.Method.TRACE, requestSerializer, params, configuration, handler)
+    }
+
+    /// MARK: PATCH
+    static public func patch(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ configuration: XHttp.Configuration? = nil, _ handler: ((_ result: XHttp.Result) -> Void)? = nil) -> URLSessionTask? {
+        return request(path, XHttp.Method.PATCH, requestSerializer, params, configuration, handler)
+    }
+
     /**
      *  网络请求
      *  - Parameter: path  请求地址（如果在configuration配置了host，那么此时可以是短链）
@@ -115,7 +105,7 @@ public class XHttp {
                     let data = try JSONSerialization.data(withJSONObject: params, options: .prettyPrinted)
                     if method == XHttp.Method.GET, let ext = String(data: data, encoding: .utf8) {
                         request.url = URL(string: url.absoluteString + "?\(ext)")
-                    } else if method == XHttp.Method.POST {
+                    } else {
                         request.httpBody = data
                         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
                     }
@@ -134,7 +124,8 @@ public class XHttp {
                     })
                     if method == XHttp.Method.GET {
                         request.url = URL(string: url.absoluteString + "?\(paramString)")
-                    } else if method == XHttp.Method.POST {
+                    } else {
+                        request.setValue("application/x-www-form-urlencoded; charset=utf-8", forHTTPHeaderField: "Content-Type")
                         request.httpBody = paramString.data(using: .utf8)
                     }
                 }
@@ -142,7 +133,7 @@ public class XHttp {
                 if let paramString = params as? String {
                     if method == XHttp.Method.GET {
                         request.url = URL(string: url.absoluteString + "?\(paramString)")
-                    } else if method == XHttp.Method.POST {
+                    } else {
                         request.httpBody = paramString.data(using: .utf8)
                     }
                 }

@@ -8,12 +8,17 @@
 
 import Foundation
 
-// 暂时支持两种访问
 public extension XHttp {
     
     public enum Method: String {
         case GET = "GET"
+        case HEAD = "HEAD"
         case POST = "POST"
+        case PUT = "PUT"
+        case DELETE = "DELETE"
+        case OPTIONS = "OPTIONS"
+        case TRACE = "TRACE"
+        case PATCH = "PATCH"
     }
     
 }

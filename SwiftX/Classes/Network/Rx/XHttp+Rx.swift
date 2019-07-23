@@ -20,49 +20,47 @@ import RxSwift
 public extension XHttp {
     
     final public class Rx {
-        
-        /**
-         *  默认配置  convience post请求
-         *  - Parameter: path  请求地址（如果在configuration配置了host，那么此时可以是短链）
-         *  - Parameter: requestSerializer  请求时参数需要序列化的格式
-         *  - Parameter: params 参数
-         */
-        static public func post(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil) -> Observable<Any> {
-            return request(path, XHttp.Method.POST, requestSerializer, params)
-        }
-        
-        /**
-         *  特殊情况下的 convience post请求（如：与整个项目不一致的第三方网络请求）
-         *  - Parameter: path  请求地址（如果在configuration配置了host，那么此时可以是短链）
-         *  - Parameter: requestSerializer  请求时参数需要序列化的格式
-         *  - Parameter: params 参数
-         *  - Parameter: configuration 非默认配置其他特殊配置
-         */
-        static public func post(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ configuration: XHttp.Configuration? = nil) -> Observable<Any> {
-            return request(path, XHttp.Method.POST, requestSerializer, params, configuration)
-        }
-        
-        /**
-         *  默认配置 convience get请求
-         *  - Parameter: path  请求地址（如果在configuration配置了host，那么此时可以是短链）
-         *  - Parameter: requestSerializer  请求时参数需要序列化的格式
-         *  - Parameter: params 参数
-         */
-        static public func get(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil) -> Observable<Any> {
-            return request(path, XHttp.Method.GET, requestSerializer, params)
-        }
-        
-        /**
-         *  特殊情况下的 convience get请求（如：与整个项目不一致的第三方网络请求）
-         *  - Parameter: path  请求地址（如果在configuration配置了host，那么此时可以是短链）
-         *  - Parameter: requestSerializer  请求时参数需要序列化的格式
-         *  - Parameter: params 参数
-         *  - Parameter: configuration 非默认配置其他特殊配置
-         */
+
+        /// MARK: GET
         static public func get(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ configuration: XHttp.Configuration? = nil) -> Observable<Any> {
             return request(path, XHttp.Method.GET, requestSerializer, params, configuration)
         }
-        
+
+        /// MARK: HEAD
+        static public func head(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ configuration: XHttp.Configuration? = nil) -> Observable<Any> {
+            return request(path, XHttp.Method.HEAD, requestSerializer, params, configuration)
+        }
+
+        /// MARK: POST
+        static public func post(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ configuration: XHttp.Configuration? = nil) -> Observable<Any> {
+            return request(path, XHttp.Method.POST, requestSerializer, params, configuration)
+        }
+
+        /// MARK: PUT
+        static public func put(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ configuration: XHttp.Configuration? = nil) -> Observable<Any> {
+            return request(path, XHttp.Method.PUT, requestSerializer, params, configuration)
+        }
+
+        /// MARK: DELETE
+        static public func delete(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ configuration: XHttp.Configuration? = nil) -> Observable<Any> {
+            return request(path, XHttp.Method.DELETE, requestSerializer, params, configuration)
+        }
+
+        /// MARK: OPTIONS
+        static public func options(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ configuration: XHttp.Configuration? = nil) -> Observable<Any> {
+            return request(path, XHttp.Method.OPTIONS, requestSerializer, params, configuration)
+        }
+
+        /// MARK: TRACE
+        static public func trace(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ configuration: XHttp.Configuration? = nil) -> Observable<Any> {
+            return request(path, XHttp.Method.TRACE, requestSerializer, params, configuration)
+        }
+
+        /// MARK: PATCH
+        static public func patch(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ configuration: XHttp.Configuration? = nil) -> Observable<Any> {
+            return request(path, XHttp.Method.PATCH, requestSerializer, params, configuration)
+        }
+
         /**
          *  网络请求
          *  - Parameter: path  请求地址（如果在configuration配置了host，那么此时可以是短链）
