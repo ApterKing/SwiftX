@@ -128,7 +128,7 @@ extension XLocationSelectionViewController {
             guard let weakSelf = self else { return }
             weakSelf.searchBar.resignFirstResponder()
             weakSelf.handler?(weakSelf.selectedInfo)
-            currentNavigationController?.popViewController(animated: true)
+            topNavigationController?.popViewController(animated: true)
         })
         
         view.addSubview(mapView)
@@ -184,7 +184,7 @@ extension XLocationSelectionViewController {
         }
         vc.handler = handler
         vc.hidesBottomBarWhenPushed = true
-        currentNavigationController?.pushViewController(vc, animated: true)
+        topNavigationController?.pushViewController(vc, animated: true)
     }
     
 }

@@ -17,73 +17,81 @@ public func viewController(for view: UIView) -> UIViewController? {
     return nextResponder as? UIViewController
 }
 
-/// MARK: 获取当前的TabViewController
-public var currentTabBarController: UITabBarController? {
-//    if let vc = currentViewController {
-//        if vc is UINavigationController {
-//            return vc as? UINavigationController
-//        } else if vc is UITabBarController {
-//            return vc as? UITabBarController
-//            let currentVC = vc as! UITabBarController
-//            let tabVC = currentVC.viewControllers![currentVC.selectedIndex]
-//            if tabVC is UINavigationController {
-//                return tabVC as? UINavigationController
-//            } else {
-//                return tabVC.navigationController ?? nil
-//            }
-//        } else {
-//            return vc.navigationController
-//        }
-//    }
-    return nil
-}
-
-/// MARK: 获取应用当前最前置的UIViewController
-public var currentViewController: UIViewController? {
-    var vc = UIApplication.shared.keyWindow?.rootViewController ?? nil
-    while vc?.presentedViewController != nil {
-        vc = vc?.presentedViewController
-        if vc?.presentedViewController == nil {
-            if vc is UINavigationController {
-                let naviVC = vc as! UINavigationController
-                return naviVC.visibleViewController
-            } else {
-                return vc
-            }
+/// 获取最顶层的viewController
+public var topViewController: UIViewController? {
+    let windows = UIApplication.shared.windows
+    var rootViewController: UIViewController?
+    for window in windows {
+        if let windowRootViewController = window.rootViewController {
+            rootViewController = windowRootViewController
+            break
         }
     }
-    if vc is UITabBarController {
-        let currentVC = vc as! UITabBarController
-        vc = currentVC.viewControllers![currentVC.selectedIndex]
-        if vc is UINavigationController {
-            let naviVC = vc as! UINavigationController
-            return naviVC.visibleViewController
-        }
-        return vc
-    } else if vc is UINavigationController {
-        let currentVC = vc as! UINavigationController
-        return currentVC.visibleViewController
-    } else {
-        return vc
-    }
+    return top(of: rootViewController)
 }
 
-/// MARK: 获取应用当前最前置的UINavigationController
-public var currentNavigationController: UINavigationController? {
-    if let vc = currentViewController {
-        if vc is UINavigationController {
-            return vc as? UINavigationController
-        } else if vc is UITabBarController {
-            let currentVC = vc as! UITabBarController
-            let tabVC = currentVC.viewControllers![currentVC.selectedIndex]
-            if tabVC is UINavigationController {
-                return tabVC as? UINavigationController
-            } else {
-                return tabVC.navigationController ?? nil
-            }
+/// 获取keyWindow最顶层的viewController
+public var topKeyWindowViewController: UIViewController? {
+    return top(of: UIApplication.shared.keyWindow?.rootViewController)
+}
+
+/// 获取当前的navigationController
+public var topNavigationController: UINavigationController? {
+    let viewController = topViewController
+    return topNavi(of: viewController)
+}
+
+/// 获取keyWindow最顶层的navigationController
+public var topKeyWindowNavigationController: UINavigationController? {
+    let viewController = topKeyWindowViewController
+    return topNavi(of: viewController)
+}
+
+/// 获取与某个viewController相关联的最顶层viewController
+private func top(of viewController: UIViewController?) -> UIViewController? {
+
+    if let presentedViewController = viewController?.presentedViewController {
+        return top(of: presentedViewController)
+    }
+
+    if let tabBarController = viewController as? UITabBarController {
+        let selectedViewController = tabBarController.selectedViewController
+        return top(of: selectedViewController)
+    }
+
+    if let navigationController = viewController as? UINavigationController,
+        let visibleViewController = navigationController.visibleViewController {
+        return top(of: visibleViewController)
+    }
+
+    if let pageController = viewController as? UIPageViewController,
+        pageController.viewControllers?.count == 1 {
+        return top(of: pageController.viewControllers?.first)
+    }
+
+    for subview in viewController?.view.subviews ?? [] {
+        if let childViewController = subview.next as? UIViewController {
+            return top(of: childViewController)
+        }
+    }
+
+    return viewController
+}
+
+/// 获取与某个指定viewController关联的navigationController
+private func topNavi(of viewController: UIViewController?) -> UINavigationController? {
+    if let navigationController = viewController as? UINavigationController {
+        return navigationController
+    }
+
+    if let tabbarController = viewController as? UITabBarController {
+        let selectedViewController = tabbarController.selectedViewController
+        if let navigationController = selectedViewController as? UINavigationController {
+            return navigationController
         } else {
-            return vc.navigationController
+            return tabbarController.navigationController
         }
     }
-    return nil
+
+    return viewController?.navigationController
 }
