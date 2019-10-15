@@ -38,13 +38,13 @@ public var topKeyWindowViewController: UIViewController? {
 /// 获取当前的navigationController
 public var topNavigationController: UINavigationController? {
     let viewController = topViewController
-    return topNavi(of: viewController)
+    return navc(of: viewController)
 }
 
 /// 获取keyWindow最顶层的navigationController
 public var topKeyWindowNavigationController: UINavigationController? {
     let viewController = topKeyWindowViewController
-    return topNavi(of: viewController)
+    return navc(of: viewController)
 }
 
 /// 获取与某个viewController相关联的最顶层viewController
@@ -79,7 +79,7 @@ private func top(of viewController: UIViewController?) -> UIViewController? {
 }
 
 /// 获取与某个指定viewController关联的navigationController
-private func topNavi(of viewController: UIViewController?) -> UINavigationController? {
+private func navc(of viewController: UIViewController?) -> UINavigationController? {
     if let navigationController = viewController as? UINavigationController {
         return navigationController
     }
