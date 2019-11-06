@@ -11,11 +11,11 @@ import Toaster
 
 public extension Toast {
     
-    static public func message (_ text: String?) {
-        message(text, duration: 1)
+    static public func show(_ text: String?) {
+        show(text, duration: 1)
     }
     
-    static public func message (_ text: String?, duration: TimeInterval) {
+    static public func show(_ text: String?, duration: TimeInterval) {
         
         guard (text != nil || !text!.isEmpty()) else { return }
         
@@ -35,7 +35,7 @@ public extension Toast {
             }
         }
         
-        let keyboardVisibleManager = UIKeyboardVisibleManager.share
+        let keyboardVisibleManager = UIKeyboardVisibleManager.shared
         if keyboardVisibleManager.isVisible {
             let animation = CABasicAnimation()
             animation.keyPath = "position.y"
@@ -53,12 +53,12 @@ public extension Toast {
     }
     
     static func setupKeyboardVisibleManager() {
-        _ = UIKeyboardVisibleManager.share
+        _ = UIKeyboardVisibleManager.shared
     }
 }
 
 class UIKeyboardVisibleManager {
-    static let share : UIKeyboardVisibleManager = UIKeyboardVisibleManager()
+    static let shared: UIKeyboardVisibleManager = UIKeyboardVisibleManager()
     fileprivate(set) var isVisible  = false
     init() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow), name: UIResponder.keyboardWillShowNotification, object: nil)
