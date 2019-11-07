@@ -14,6 +14,11 @@ Pod::Spec.new do |s|
   s.description      = <<-DESC
 			Globals: 定义一些全局需要使用的方法
 			Extensions: Foundation、UIKit、CoreGraphics
+      Cache: 缓存
+      Network/NetworkRx: 网络请求
+      ThirdParty: 常用三方引用
+      JSON: 数据解析
+      OpenSDK: 百度地图、JPush、微信、微博、支付宝等
                        DESC
 
   s.homepage         = 'https://github.com/ApterKing/SwiftX'
