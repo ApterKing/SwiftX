@@ -22,42 +22,42 @@ public extension XHttp {
     final public class Rx {
 
         /// MARK: GET
-        static public func get(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ configuration: XHttp.Configuration? = nil) -> Observable<Any> {
+        static public func get(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ configuration: XHttp.Configuration? = nil) -> Single<Any> {
             return request(path, XHttp.Method.GET, requestSerializer, params, configuration)
         }
 
         /// MARK: HEAD
-        static public func head(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ configuration: XHttp.Configuration? = nil) -> Observable<Any> {
+        static public func head(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ configuration: XHttp.Configuration? = nil) -> Single<Any> {
             return request(path, XHttp.Method.HEAD, requestSerializer, params, configuration)
         }
 
         /// MARK: POST
-        static public func post(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ configuration: XHttp.Configuration? = nil) -> Observable<Any> {
+        static public func post(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ configuration: XHttp.Configuration? = nil) -> Single<Any> {
             return request(path, XHttp.Method.POST, requestSerializer, params, configuration)
         }
 
         /// MARK: PUT
-        static public func put(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ configuration: XHttp.Configuration? = nil) -> Observable<Any> {
+        static public func put(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ configuration: XHttp.Configuration? = nil) -> Single<Any> {
             return request(path, XHttp.Method.PUT, requestSerializer, params, configuration)
         }
 
         /// MARK: DELETE
-        static public func delete(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ configuration: XHttp.Configuration? = nil) -> Observable<Any> {
+        static public func delete(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ configuration: XHttp.Configuration? = nil) -> Single<Any> {
             return request(path, XHttp.Method.DELETE, requestSerializer, params, configuration)
         }
 
         /// MARK: OPTIONS
-        static public func options(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ configuration: XHttp.Configuration? = nil) -> Observable<Any> {
+        static public func options(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ configuration: XHttp.Configuration? = nil) -> Single<Any> {
             return request(path, XHttp.Method.OPTIONS, requestSerializer, params, configuration)
         }
 
         /// MARK: TRACE
-        static public func trace(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ configuration: XHttp.Configuration? = nil) -> Observable<Any> {
+        static public func trace(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ configuration: XHttp.Configuration? = nil) -> Single<Any> {
             return request(path, XHttp.Method.TRACE, requestSerializer, params, configuration)
         }
 
         /// MARK: PATCH
-        static public func patch(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ configuration: XHttp.Configuration? = nil) -> Observable<Any> {
+        static public func patch(_ path: String, _ requestSerializer: XHttp.Serializer.Request? = nil, _ params: Any? = nil, _ configuration: XHttp.Configuration? = nil) -> Single<Any> {
             return request(path, XHttp.Method.PATCH, requestSerializer, params, configuration)
         }
 
@@ -69,15 +69,14 @@ public extension XHttp {
          *  - Parameter: params 参数
          *  - Parameter: configuration 请求配置
          */
-        static public func request(_ path: String, _ method: XHttp.Method?, _ requestSerializer: XHttp.Serializer.Request?, _ params: Any?, _ configuration: XHttp.Configuration? = nil) -> Observable<Any> {
-            return Observable<Any>.create({ (observer) -> Disposable in
+        static public func request(_ path: String, _ method: XHttp.Method?, _ requestSerializer: XHttp.Serializer.Request?, _ params: Any?, _ configuration: XHttp.Configuration? = nil) -> Single<Any> {
+            return Single<Any>.create(subscribe: { (observer) -> Disposable in
                 let task = XHttp.request(path, method, requestSerializer, params, configuration, { (result) in
                     switch result {
                     case .success(let data):
-                        observer.onNext(data)
-                        observer.onCompleted()
+                        observer(.success(data))
                     case .failure(let error):
-                        observer.onError(error)
+                        observer(.error(error))
                     }
                 })
                 return Disposables.create {

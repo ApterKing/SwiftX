@@ -23,7 +23,7 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = '10.0'
   
-  s.default_subspecs = 'Core'
+  s.default_subspecs = 'Core', 'Globals', 'Extensions', 'Network', 'Cache', 'JSON', 'View'
   
   # ---------------  Core  -----------
   s.subspec 'Core' do |ss|
@@ -114,12 +114,6 @@ Pod::Spec.new do |s|
   s.subspec 'Bluetooth' do |ss|
     ss.source_files = 'SwiftX/Classes/Bluetooth/*.swift'
     ss.frameworks = 'CoreBluetooth', 'Foundation'
-  end
-
-  # --------------  Cache  ----------------
-  s.subspec 'Cache' do |ss|
-    ss.source_files = 'SwiftX/Classes/Cache/*.swift'
-    ss.frameworks = 'Foundation'
   end
 
   # -------------- RN HotUpdate ---------------

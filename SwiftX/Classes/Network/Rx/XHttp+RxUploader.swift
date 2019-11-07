@@ -22,20 +22,18 @@ public extension XHttp.Rx {
          *  通过fileURL 上传数据
          *  - Parameter: request
          *  - Parameter: fileURL 待上传文件地址
-         *  - Return: Observable<XHttp.Result.Uploader> for more @see XHttp.Result.Uploader，
-         *              注意：这里onNext 只会返回.progress及.success, onError返回.failure中的error
+         *  - Return: Single<XHttp.Result.Uploader> for more @see XHttp.Result.Uploader，
          */
-        static public func uploadTask(with request: URLRequest, fromFile fileURL: URL) -> Observable<XHttp.Result.Uploader> {
-            return Observable<XHttp.Result.Uploader>.create({ (observer) -> Disposable in
+        static public func uploadTask(with request: URLRequest, fromFile fileURL: URL) -> Single<XHttp.Result.Uploader> {
+            return Single<XHttp.Result.Uploader>.create(subscribe: { (observer) -> Disposable in
                 let uploadTask = XHttp.Uploader.uploadTask(with: request, fromFile: fileURL, handler: { (result) in
                     switch result {
                     case .progress(_, _):
-                        observer.onNext(result)
+                        observer(.success(result))
                     case .success(_):
-                        observer.onNext(result)
-                        observer.onCompleted()
+                        observer(.success(result))
                     case .failure(let error):
-                        observer.onError(error)
+                        observer(.error(error))
                     }
                 })
                 
@@ -49,20 +47,18 @@ public extension XHttp.Rx {
          *  通过bodyData 上传数据
          *  - Parameter: request
          *  - Parameter: bodyData 待上传数据
-         *  - Return: Observable<XHttp.Result.Uploader> for more @see XHttp.Result.Uploader，
-         *              注意：这里onNext 只会返回.progress及.success, onError返回.failure中的error
+         *  - Return: Single<XHttp.Result.Uploader> for more @see XHttp.Result.Uploader，
          */
-        static public func uploadTask(with request: URLRequest, from bodyData: Data) -> Observable<XHttp.Result.Uploader> {
-            return Observable<XHttp.Result.Uploader>.create({ (observer) -> Disposable in
+        static public func uploadTask(with request: URLRequest, from bodyData: Data) -> Single<XHttp.Result.Uploader> {
+            return Single<XHttp.Result.Uploader>.create(subscribe: { (observer) -> Disposable in
                 let uploadTask = XHttp.Uploader.uploadTask(with: request, from: bodyData, handler: { (result) in
                     switch result {
                     case .progress(_, _):
-                        observer.onNext(result)
+                        observer(.success(result))
                     case .success(_):
-                        observer.onNext(result)
-                        observer.onCompleted()
+                        observer(.success(result))
                     case .failure(let error):
-                        observer.onError(error)
+                        observer(.error(error))
                     }
                 })
                 
@@ -72,17 +68,16 @@ public extension XHttp.Rx {
             })
         }
         
-        static public func uploadTask(withStreamedRequest request: URLRequest) -> Observable<XHttp.Result.Uploader> {
-            return Observable<XHttp.Result.Uploader>.create({ (observer) -> Disposable in
+        static public func uploadTask(withStreamedRequest request: URLRequest) -> Single<XHttp.Result.Uploader> {
+            return Single<XHttp.Result.Uploader>.create(subscribe: { (observer) -> Disposable in
                 let uploadTask = XHttp.Uploader.uploadTask(withStreamedRequest: request, handler: { (result) in
                     switch result {
                     case .progress(_, _):
-                        observer.onNext(result)
+                        observer(.success(result))
                     case .success(_):
-                        observer.onNext(result)
-                        observer.onCompleted()
+                        observer(.success(result))
                     case .failure(let error):
-                        observer.onError(error)
+                        observer(.error(error))
                     }
                 })
                 
