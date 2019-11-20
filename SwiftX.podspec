@@ -134,7 +134,7 @@ Pod::Spec.new do |s|
     # Realm
     ss.subspec 'Realm' do |sss|
       sss.source_files = 'SwiftX/Classes/ThirdParty/Realm/*.swift'
-      sss.dependency 'RealmSwift', '~> 3.13.0'
+      sss.dependency 'RealmSwift', '= 3.14.0'
     end
     
     # Kingfisher

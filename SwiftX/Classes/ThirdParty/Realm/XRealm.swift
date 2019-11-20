@@ -17,7 +17,7 @@ import RealmSwift
  *  上述方法最大程度避免重复beginTransaction导致程序崩溃
  *
  *  - Usage:
- *    - 初始化：只有初始化之后才能使用Realm数据库
+ *    - 初始化：只有初始化之后才能使用Realm数据库，这里的UID可以为空，那么会自动创建一个UID相关的数据库URL
  *      XRealm.default.initialize(withUID: "xxx")
  *
  *    - 数据库操作：
@@ -33,23 +33,27 @@ import RealmSwift
  *      }
  */
 public class XRealm {
-    
+
     static public let `default` = XRealm()
-    
-    public var realm: Realm?
-    fileprivate var configuration: Realm.Configuration? = nil {
-        didSet {
-            if let config = configuration, let realm = try? Realm(configuration: config) {
-                realm.refresh()
-                self.realm = realm
+
+    /// 由于Realm数据库时线程非安全，并且不支持跨线程贡献，那么我们必须为每个线程Realm实例时
+    /// 如果增、删、改、查时在主线程，就不会新建realm，否则会在运行的线程新建一个realm，故不必担忧在增删改查时跨线程操作的问题
+    public var realm: Realm? {
+        get {
+            if Thread.isMainThread {
+                return _realm ?? (try? Realm())
+            } else {
+                return try? Realm()
             }
         }
     }
+    fileprivate var _realm: Realm?
     fileprivate var lock = NSRecursiveLock()
-    
+
     fileprivate init() {}
-    
-    public func initialize(withUID: String?,
+
+    /// warning: UID、inMemoryIdentifier、syncConfiguration 三者只能存在其一
+    public func initialize(withUID: String? = nil,
                            inMemoryIdentifier: String? = nil,
                            syncConfiguration: SyncConfiguration? = nil,
                            encryptionKey: Data? = nil,
@@ -59,14 +63,14 @@ public class XRealm {
                            deleteRealmIfMigrationNeeded: Bool = true,
                            shouldCompactOnLaunch: ((Int, Int) -> Bool)? = nil,
                            objectTypes: [Object.Type]? = nil) throws {
-        
-        var fileURL = XRealm.sanboxURL(XRealm.UUID())
-        if withUID != nil && withUID != "" {
-            fileURL = XRealm.sanboxURL(withUID!)
+
+        var fileURL: URL?
+        if inMemoryIdentifier == nil && syncConfiguration == nil {
+            fileURL = withUID != nil && withUID != "" ? XRealm.sanboxURL(withUID!) : XRealm.sanboxURL(XRealm.UUID())
         }
-        
+
         let config = Realm.Configuration(fileURL: fileURL,
-                                         inMemoryIdentifier: inMemoryIdentifier ?? (fileURL == nil ? "XRealm" : nil),
+                                         inMemoryIdentifier: inMemoryIdentifier ?? (fileURL == nil && syncConfiguration == nil ? "XRealm" : nil),
                                          syncConfiguration: syncConfiguration,
                                          encryptionKey: encryptionKey,
                                          readOnly: readOnly,
@@ -75,21 +79,29 @@ public class XRealm {
                                          deleteRealmIfMigrationNeeded: deleteRealmIfMigrationNeeded,
                                          shouldCompactOnLaunch: shouldCompactOnLaunch,
                                          objectTypes: objectTypes)
-        
+
         lock.lock()
-        do {
-            Realm.Configuration.defaultConfiguration = config
-            _ = try Realm(configuration: config)
-            configuration = config
+        guard _realm == nil else {
             lock.unlock()
-        } catch let error {
-            lock.unlock()
-            throw NSError(domain: "com.swiftx.XRealm", code: -1, userInfo: ["XRealm": "Failed to init Realm with configuration \(config), error \(error)"])
+            return
         }
+        // 保证数据库处理完毕后才打开，并且保证默认持有的一个Realm实例在主线程上
+        Realm.asyncOpen(configuration: config, callbackQueue: DispatchQueue.main, callback: { [weak self] (realm, error) in
+            Realm.Configuration.defaultConfiguration = config
+            self?._realm = realm
+            self?.lock.unlock()
+        })
     }
-    
-    public func write(_ block: (() throws -> Void)) throws {
-        guard let realm = self.realm else { return }
+
+}
+
+/// MARK: 事务操作
+extension XRealm {
+
+    // 在同一个Realm实例中不支持事务嵌套操作，为了解决此问题，此处通过一个传入realm参数及markedShouldCommit来处理，避免事务嵌套
+    // 虽然这种事务嵌套应该极力避免，但在团队合作开发室这种情况难免会出现
+    public func write(with realm: Realm? = nil, _ block: (() throws -> Void)) throws {
+        guard let realm = realm ?? self.realm else { return }
         var markedShouldCommit = false
         if !realm.isInWriteTransaction {
             realm.beginWrite()
@@ -107,126 +119,121 @@ public class XRealm {
             try realm.commitWrite()
         }
     }
-    
+
 }
 
 /// MARK: 新增/修改数据
 extension XRealm {
-    
+
+    // 有效避免操作已经invalidate的数据
     public func add(_ object: Object, _ update: Bool = false, _ autoWrite: Bool = true) {
-        guard let realm = self.realm, !object.isInvalidated else { return }
+        guard let realm = object.realm ?? self.realm, !object.isInvalidated else { return }
         guard autoWrite == true else {
             realm.add(object, update: update)
             return
         }
-        try? write({
+        // 这里更多请查看上述：事务操作
+        try? write(with: realm, {
             realm.add(object, update: update)
         })
     }
-    
+
     public func add<S: Sequence>(_ objects: S, update: Bool = false, _ autoWrite: Bool = true) where S.Iterator.Element: Object {
         guard let realm = self.realm else { return }
-        var newObjects: [Object] = []
-        for object in objects {
-            if !object.isInvalidated {
-                newObjects.append(object)
-            }
+        let newObjects: [Object] = objects.filter { (object) -> Bool in
+            return !object.isInvalidated
         }
-        if newObjects.count != 0 {
-            guard autoWrite == true else {
-                realm.add(objects, update: update)
-                return
-            }
-            try? write({
-                realm.add(objects, update: update)
-            })
+        guard newObjects.count != 0 else { return }
+        guard autoWrite == true else {
+            realm.add(objects, update: update)
+            return
         }
+        try? write(with: realm, {
+            realm.add(objects, update: update)
+        })
     }
-    
+
 }
 
 /// MARK: 删除数据
 extension XRealm {
-    
+
+    // 有效避免操作已经invalidate的数据
     public func delete(_ object: Object, _ autoWrite: Bool = true) {
-        guard let realm = self.realm, !object.isInvalidated  else { return }
+        guard let realm = object.realm ?? self.realm, !object.isInvalidated  else { return }
         guard autoWrite == true else {
             realm.delete(object)
             return
         }
-        try? write({
+        try? write(with: realm, {
             realm.delete(object)
         })
     }
-    
+
     public func delete<S: Sequence>(_ objects: S, _ autoWrite: Bool = true) where S.Iterator.Element: Object {
         guard let realm = self.realm else { return }
-        var newObjects: [Object] = []
-        for object in objects {
-            if !object.isInvalidated {
-                newObjects.append(object)
-            }
+        let newObjects: [Object] = objects.filter { (object) -> Bool in
+            return !object.isInvalidated
         }
-        if newObjects.count != 0 {
-            guard autoWrite == true else {
-                realm.delete(newObjects)
-                return
-            }
-            try? write({
-                realm.delete(newObjects)
-            })
+        guard newObjects.count != 0 else { return }
+        guard autoWrite == true else {
+            realm.delete(newObjects)
+            return
         }
+        try? write(with: realm, {
+            realm.delete(newObjects)
+        })
     }
-    
+
     public func delete<Element: Object>(_ objects: List<Element>, _ autoWrite: Bool = true) {
-        guard let realm = self.realm, !objects.isInvalidated  else { return }
+        guard let realm = objects.realm ?? self.realm, !objects.isInvalidated  else { return }
         guard autoWrite == true else {
             realm.delete(objects)
             return
         }
-        try? write({
+        try? write(with: realm, {
             realm.delete(objects)
         })
     }
-    
+
     public func delete<Element: Object>(_ objects: Results<Element>, _ autoWrite: Bool = true) {
-        guard let realm = self.realm, !objects.isInvalidated  else { return }
+        guard let realm = objects.realm ?? self.realm, !objects.isInvalidated  else { return }
         guard autoWrite == true else {
             realm.delete(objects)
             return
         }
-        try? write({
+        try? write(with: realm, {
             realm.delete(objects)
         })
     }
-    
+
     public func deleteAll(_ autoWrite: Bool = true) {
         guard autoWrite == true else {
             realm?.deleteAll()
             return
         }
-        try? write({
+        try? write(with: realm, {
             realm?.deleteAll()
         })
     }
-    
+
 }
 
 /// MARK: 查询数据
 extension XRealm {
-    
+
     public func objects<Element: Object>(_ type: Element.Type) -> Results<Element>? {
         return realm?.objects(type)
     }
-    
+
     public func object<Element: Object, KeyType>(ofType type: Element.Type, forPrimaryKey key: KeyType) -> Element? {
         return realm?.object(ofType: type, forPrimaryKey: key)
     }
-    
+
 }
 
 extension XRealm {
-    
+
     public static func sanboxURL(_ pathComponent: String, _ ofType: String = "realm") -> URL? {
         if let supportPath = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true).first {
             let sanboxPath = "\(supportPath)/\(pathComponent).\(ofType)"
@@ -237,7 +244,7 @@ extension XRealm {
         }
         return nil
     }
-    
+
     public static func UUID() -> String {
         let userDefault = UserDefaults(suiteName: "Swift-X") ?? UserDefaults.standard
         if let uuid = userDefault.string(forKey: "XRealmManager_UUID") {
@@ -248,6 +255,5 @@ extension XRealm {
             return uuid
         }
     }
-    
-}
 
+}
