@@ -69,7 +69,7 @@ public class XRealm {
             fileURL = withUID != nil && withUID != "" ? XRealm.sanboxURL(withUID!) : XRealm.sanboxURL(XRealm.UUID())
         }
 
-        let config = Realm.Configuration(fileURL: fileURL,
+        let configuration = Realm.Configuration(fileURL: fileURL,
                                          inMemoryIdentifier: inMemoryIdentifier ?? (fileURL == nil && syncConfiguration == nil ? "XRealm" : nil),
                                          syncConfiguration: syncConfiguration,
                                          encryptionKey: encryptionKey,
@@ -80,14 +80,19 @@ public class XRealm {
                                          shouldCompactOnLaunch: shouldCompactOnLaunch,
                                          objectTypes: objectTypes)
 
+        try self.initialize(configuration: configuration)
+    }
+
+    // 使用configuration配置
+    public func initialize(configuration: Realm.Configuration) throws {
         lock.lock()
         guard _realm == nil else {
             lock.unlock()
             return
         }
         // 保证数据库处理完毕后才打开，并且保证默认持有的一个Realm实例在主线程上
-        Realm.asyncOpen(configuration: config, callbackQueue: DispatchQueue.main, callback: { [weak self] (realm, error) in
-            Realm.Configuration.defaultConfiguration = config
+        Realm.asyncOpen(configuration: configuration, callbackQueue: DispatchQueue.main, callback: { [weak self] (realm, error) in
+            Realm.Configuration.defaultConfiguration = configuration
             self?._realm = realm
             self?.lock.unlock()
         })
@@ -98,9 +103,9 @@ public class XRealm {
 /// MARK: 事务操作
 extension XRealm {
 
-    // 在同一个Realm实例中不支持事务嵌套操作，为了解决此问题，此处通过一个传入realm参数及markedShouldCommit来处理，避免事务嵌套
+    // 在同一个Realm实例中或者相同线程下的不同Realm实例中不支持事务嵌套操作
     // 虽然这种事务嵌套应该极力避免，但在团队合作开发室这种情况难免会出现
-    public func write(with realm: Realm? = nil, _ block: (() throws -> Void)) throws {
+    public func write(_ realm: Realm? = nil, _ block: (() throws -> Void)) throws {
         guard let realm = realm ?? self.realm else { return }
         var markedShouldCommit = false
         if !realm.isInWriteTransaction {
@@ -133,7 +138,7 @@ extension XRealm {
             return
         }
         // 这里更多请查看上述：事务操作
-        try? write(with: realm, {
+        try? write(realm, {
             realm.add(object, update: update)
         })
     }
@@ -148,7 +153,7 @@ extension XRealm {
             realm.add(objects, update: update)
             return
         }
-        try? write(with: realm, {
+        try? write(realm, {
             realm.add(objects, update: update)
         })
     }
@@ -165,7 +170,7 @@ extension XRealm {
             realm.delete(object)
             return
         }
-        try? write(with: realm, {
+        try? write(realm, {
             realm.delete(object)
         })
     }
@@ -180,7 +185,7 @@ extension XRealm {
             realm.delete(newObjects)
             return
         }
-        try? write(with: realm, {
+        try? write(realm, {
             realm.delete(newObjects)
         })
     }
@@ -191,7 +196,7 @@ extension XRealm {
             realm.delete(objects)
             return
         }
-        try? write(with: realm, {
+        try? write(realm, {
             realm.delete(objects)
         })
     }
@@ -202,7 +207,7 @@ extension XRealm {
             realm.delete(objects)
             return
         }
-        try? write(with: realm, {
+        try? write(realm, {
             realm.delete(objects)
         })
     }
@@ -212,7 +217,7 @@ extension XRealm {
             realm?.deleteAll()
             return
         }
-        try? write(with: realm, {
+        try? write(realm, {
             realm?.deleteAll()
         })
     }
