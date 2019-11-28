@@ -31,7 +31,7 @@ import RealmSwift
                ...
            }
        }
-
+ 
      - 主线程下支持事务嵌套观察
         var token: NotificationToken?
         try? realm0.write {
