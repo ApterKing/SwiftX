@@ -255,7 +255,7 @@ extension XRealm {
 /// MARK: 观察
 extension XRealm {
 
-    public typealias ObserverHandler = ((_ token: NotificationToken?, _ error: ObserveError?) -> Void)
+    public typealias ObserveHandler = ((_ token: NotificationToken?, _ error: ObserveError?) -> Void)
     public typealias ObjectBlock = ((ObjectChange) -> Void)
 
     public enum ObserveError: Error {
@@ -264,8 +264,8 @@ extension XRealm {
     }
 
     // 事务中观察Object
-    public func observe<Element: Object>(_ object: Element, _ block: @escaping ((ObjectChange) -> Void), _ handler: @escaping ObserverHandler) {
-        guard object.realm != nil else {
+    public func observe<Element: Object>(_ object: Element?, _ block: @escaping ((ObjectChange) -> Void), _ handler: @escaping ObserveHandler) {
+        guard object?.realm != nil else {
             handler(nil, .unmanagedError)
             return
         }
@@ -280,14 +280,14 @@ extension XRealm {
             return
         }
         _runloopPerformBlock {
-            let token = object.observe(block)
+            let token = object?.observe(block)
             handler(token, nil)
         }
     }
 
     // 观察Results
-    public func observe<Element: Object>(_ results: Results<Element>, _ block: @escaping ((RealmCollectionChange<Results<Element>>) -> Void), _ handler: @escaping ObserverHandler) {
-        guard results.realm != nil else {
+    public func observe<Element: Object>(_ results: Results<Element>?, _ block: @escaping ((RealmCollectionChange<Results<Element>>) -> Void), _ handler: @escaping ObserveHandler) {
+        guard results?.realm != nil else {
             handler(nil, .unmanagedError)
             return
         }
@@ -302,14 +302,14 @@ extension XRealm {
             return
         }
         _runloopPerformBlock {
-            let token = results.observe(block)
+            let token = results?.observe(block)
             handler(token, nil)
         }
     }
 
     // 观察List
-    public func observe<Element: Object>(_ list: List<Element>, _ block: @escaping ((RealmCollectionChange<List<Element>>) -> Void), _ handler: @escaping ObserverHandler) {
-        guard list.realm != nil else {
+    public func observe<Element: Object>(_ list: List<Element>?, _ block: @escaping ((RealmCollectionChange<List<Element>>) -> Void), _ handler: @escaping ObserveHandler) {
+        guard list?.realm != nil else {
             handler(nil, .unmanagedError)
             return
         }
@@ -324,14 +324,14 @@ extension XRealm {
             return
         }
         _runloopPerformBlock {
-            let token = list.observe(block)
+            let token = list?.observe(block)
             handler(token, nil)
         }
     }
 
     // 观察LinkingObjects
-    public func observe<Element: Object>(_ linkings: LinkingObjects<Element>, _ block: @escaping ((RealmCollectionChange<LinkingObjects<Element>>) -> Void), _ handler: @escaping ObserverHandler) {
-        guard linkings.realm != nil else {
+    public func observe<Element: Object>(_ linkings: LinkingObjects<Element>?, _ block: @escaping ((RealmCollectionChange<LinkingObjects<Element>>) -> Void), _ handler: @escaping ObserveHandler) {
+        guard linkings?.realm != nil else {
             handler(nil, .unmanagedError)
             return
         }
@@ -346,7 +346,7 @@ extension XRealm {
             return
         }
         _runloopPerformBlock {
-            let token = linkings.observe(block)
+            let token = linkings?.observe(block)
             handler(token, nil)
         }
     }
