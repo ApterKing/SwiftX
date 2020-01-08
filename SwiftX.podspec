@@ -45,7 +45,7 @@ Pod::Spec.new do |s|
 
   # ---------------  Extensions常用扩展  -----------
   s.subspec 'Extensions' do |ss|
-    ss.source_files = 'SwiftX/Classes/Extensions/**/*.swift'
+    ss.source_files = 'SwiftX/Classes/Extensions/**/*.{swift,h,m}'
 
     ss.frameworks = 'UIKit', 'Foundation', 'CoreGraphics'
   end
